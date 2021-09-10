@@ -13,7 +13,7 @@ contract GameFactory is Ownable {
     /**
      * @dev Allows a player to create a new game
      */
-    function createGame() external payable returns (address payable) {
+    function createGame() external payable {
         require(msg.value > 0, "You must stake some ETHs.");
 
         address payable newGame = payable(address(new Game(msg.sender, owner)));
@@ -22,7 +22,6 @@ contract GameFactory is Ownable {
         require(success, "Transfer failed.");
 
         deployedGames.push(newGame);
-        return newGame;
     }
 
     /**
