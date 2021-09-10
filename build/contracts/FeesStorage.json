@@ -12,8 +12,7 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function",
-      "constant": true
+      "type": "function"
     },
     {
       "inputs": [],
@@ -26,8 +25,7 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function",
-      "constant": true
+      "type": "function"
     },
     {
       "inputs": [],
@@ -51,8 +49,7 @@
     },
     {
       "stateMutability": "payable",
-      "type": "receive",
-      "payable": true
+      "type": "receive"
     },
     {
       "inputs": [
@@ -70,8 +67,7 @@
       "name": "withdraw",
       "outputs": [],
       "stateMutability": "payable",
-      "type": "function",
-      "payable": true
+      "type": "function"
     },
     {
       "inputs": [],
@@ -84,8 +80,7 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function",
-      "constant": true
+      "type": "function"
     }
   ],
   "metadata": "{\"compiler\":{\"version\":\"0.8.0+commit.c7dfd78e\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"balance\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getBalance\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address payable\",\"name\":\"_recipient\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"}],\"name\":\"withdraw\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"stateMutability\":\"payable\",\"type\":\"receive\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"getBalance()\":{\"details\":\"Retrieve the amount of ETHs\",\"returns\":{\"_0\":\"amount of ETHs stored in the contract\"}},\"renounceOwnership()\":{\"details\":\"Allows the current owner to relinquish control of the contract.\"},\"transferOwnership(address)\":{\"details\":\"Allows the current owner to transfer control of the contract to a newOwner.\",\"params\":{\"newOwner\":\"The address to transfer ownership to.\"}},\"withdraw(address,uint256)\":{\"details\":\"Allows the `owner` to withdraw the selected `_amount`\",\"params\":{\"_amount\":\"Amount of ETHs being withdrawed\",\"_recipient\":\"Address of the recipient\"}}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/FeesStorage.sol\":\"FeesStorage\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/FeesStorage.sol\":{\"keccak256\":\"0xdda8a0df160f0ba5a2f98d3f05311253c2371cd02e77d1113e184f6f98583d10\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://7e1976c05e0e7fe38307bcb3342a8c6a8e78976b128e38f5202e76808c035d92\",\"dweb:/ipfs/QmTM7V7DLeFyggn5zVDaGPw8NtUJHHzYqSDZQTVgWeR6Rn\"]},\"project:/contracts/Ownable.sol\":{\"keccak256\":\"0x81a4b7077383050877f13ba63f2453994648586375e03e8ed236b8976514c380\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://d912ad630e713cf91950cdb42b27525d2ff5d7bc12a43d632405575e03a7865e\",\"dweb:/ipfs/QmRBdmR3EbA8RoA692h7uViu2sw76vnmLqkHrvvLd2We5Y\"]}},\"version\":1}",
@@ -2542,7 +2537,7 @@
         60
       ],
       "Ownable": [
-        600
+        596
       ]
     },
     "id": 61,
@@ -2566,7 +2561,7 @@
         "id": 2,
         "nodeType": "ImportDirective",
         "scope": 61,
-        "sourceUnit": 601,
+        "sourceUnit": 597,
         "src": "57:23:0",
         "symbolAliases": [],
         "unitAlias": ""
@@ -2579,7 +2574,7 @@
               "id": 3,
               "name": "Ownable",
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 600,
+              "referencedDeclaration": 596,
               "src": "106:7:0"
             },
             "id": 4,
@@ -2588,14 +2583,14 @@
           }
         ],
         "contractDependencies": [
-          600
+          596
         ],
         "contractKind": "contract",
         "fullyImplemented": true,
         "id": 60,
         "linearizedBaseContracts": [
           60,
-          600
+          596
         ],
         "name": "FeesStorage",
         "nodeType": "ContractDefinition",
@@ -3081,7 +3076,7 @@
                   "id": 23,
                   "name": "onlyOwner",
                   "nodeType": "IdentifierPath",
-                  "referencedDeclaration": 563,
+                  "referencedDeclaration": 559,
                   "src": "539:9:0"
                 },
                 "nodeType": "ModifierInvocation",
@@ -3205,7 +3200,7 @@
                   "id": 51,
                   "name": "onlyOwner",
                   "nodeType": "IdentifierPath",
-                  "referencedDeclaration": 563,
+                  "referencedDeclaration": 559,
                   "src": "893:9:0"
                 },
                 "nodeType": "ModifierInvocation",
@@ -3273,7 +3268,7 @@
         60
       ],
       "Ownable": [
-        600
+        596
       ]
     },
     "id": 61,
@@ -3297,7 +3292,7 @@
         "id": 2,
         "nodeType": "ImportDirective",
         "scope": 61,
-        "sourceUnit": 601,
+        "sourceUnit": 597,
         "src": "57:23:0",
         "symbolAliases": [],
         "unitAlias": ""
@@ -3310,7 +3305,7 @@
               "id": 3,
               "name": "Ownable",
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 600,
+              "referencedDeclaration": 596,
               "src": "106:7:0"
             },
             "id": 4,
@@ -3319,14 +3314,14 @@
           }
         ],
         "contractDependencies": [
-          600
+          596
         ],
         "contractKind": "contract",
         "fullyImplemented": true,
         "id": 60,
         "linearizedBaseContracts": [
           60,
-          600
+          596
         ],
         "name": "FeesStorage",
         "nodeType": "ContractDefinition",
@@ -3812,7 +3807,7 @@
                   "id": 23,
                   "name": "onlyOwner",
                   "nodeType": "IdentifierPath",
-                  "referencedDeclaration": 563,
+                  "referencedDeclaration": 559,
                   "src": "539:9:0"
                 },
                 "nodeType": "ModifierInvocation",
@@ -3936,7 +3931,7 @@
                   "id": 51,
                   "name": "onlyOwner",
                   "nodeType": "IdentifierPath",
-                  "referencedDeclaration": 563,
+                  "referencedDeclaration": 559,
                   "src": "893:9:0"
                 },
                 "nodeType": "ModifierInvocation",
@@ -4005,13 +4000,12 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0x70f7F0f88229f44c02127ccbaf743a1e37f90119",
-      "transactionHash": "0x7bf8da82af8a9031fc8c8e7c29a370fb9739d75d37770dced02f6cbfe0651191"
+      "address": "0x866fA200beC3183D286d84662B3664d6d55f7bF1",
+      "transactionHash": "0x67866fc56fba165d00c12ca5e133b04469795e02769a12884fa1f662463cb5a2"
     }
   },
   "schemaVersion": "3.4.3",
-  "updatedAt": "2021-09-10T05:36:11.638Z",
-  "networkType": "ethereum",
+  "updatedAt": "2021-09-10T10:25:20.467Z",
   "devdoc": {
     "kind": "dev",
     "methods": {
