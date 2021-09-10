@@ -12,7 +12,7 @@ contract("FeesStorage", (accounts) => {
 
     await storageInstance.sendTransaction({
       from: accounts[1],
-      value: "1000",
+      value: "100",
     });
   });
 
