@@ -16,8 +16,8 @@ contract("FeesStorage", () => {
 
   describe("FeesStorage", async () => {
     it("Initial balance should be 0 ETHs", async () => {
-      let balance = await storageInstance.getBalance();
-      assert.strictEqual(0, balance.toNumber());
+      let balance = await web3.eth.getBalance(storageInstance.address);
+      assert.strictEqual("0", balance);
     });
 
     it("Should display 1 ETH as balance after sending 1 ETH", async () => {
@@ -30,6 +30,12 @@ contract("FeesStorage", () => {
       assert.strictEqual(web3.utils.toWei("1", "ether"), balance);
     });
 
-    it("Should allow the owner to withdraw some ETHs", async () => {});
+    it("Should allow the owner to withdraw some ETHs", async () => {
+      let balance = await web3.eth.getBalance(storageInstance.address);
+      console.log(balance);
+      await storageInstance.withdraw(owner, web3.utils.toWei("0.01", "ether"));
+
+      assert.strictEqual(web3.utils.toWei("0.9", "ether"), balance);
+    });
   });
 });

@@ -150,7 +150,7 @@ contract Game {
 
         emit GameEnded(gameId, _winner, prizePool);
 
-        resetState();
+        //resetState();
     }
 
     /**

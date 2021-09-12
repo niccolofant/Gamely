@@ -4,8 +4,6 @@ pragma solidity ^0.8.0;
 import "./Ownable.sol";
 
 contract FeesStorage is Ownable {
-    uint256 public balance = address(this).balance;
-
     /**
      * Fallback function
      */
@@ -21,17 +19,12 @@ contract FeesStorage is Ownable {
         payable
         onlyOwner
     {
-        require(_amount <= balance, "Not enough ETHs in the storage");
+        require(
+            _amount <= address(this).balance,
+            "Not enough ETHs in the storage"
+        );
 
         (bool success, ) = _recipient.call{value: _amount}("");
         require(success, "Transfer failed.");
-    }
-
-    /**
-     * @dev Retrieve the amount of ETHs
-     * @return amount of ETHs stored in the contract
-     */
-    function getBalance() external view onlyOwner returns (uint256) {
-        return balance;
     }
 }
