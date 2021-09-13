@@ -57,6 +57,7 @@ contract Game {
         address indexed winner,
         uint256 prizePool
     );
+    event GameCancelled(bytes32 gameId);
 
     modifier onlyOwner() {
         require(
@@ -129,7 +130,14 @@ contract Game {
             player2 == address(0),
             "Game already accepted. You can't delete it."
         );
+        uint256 refundAmount = address(this).balance - bet;
+        uint256 exceededAmount = address(this).balance - refundAmount;
+        if (exceededAmount > 0) {
+            (bool success, ) = owner.call{value: exceededAmount}("");
+            require(success, "Transfer failed.");
+        }
         selfdestruct(player1);
+        emit GameCancelled(gameId);
     }
 
     /**
