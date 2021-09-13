@@ -130,8 +130,7 @@ contract Game {
             player2 == address(0),
             "Game already accepted. You can't delete it."
         );
-        uint256 refundAmount = address(this).balance - bet;
-        uint256 exceededAmount = address(this).balance - refundAmount;
+        uint256 exceededAmount = address(this).balance - bet;
         if (exceededAmount > 0) {
             (bool success, ) = owner.call{value: exceededAmount}("");
             require(success, "Transfer failed.");
