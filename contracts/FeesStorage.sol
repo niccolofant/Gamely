@@ -14,7 +14,7 @@ contract FeesStorage is Ownable {
      * @param _recipient Address of the recipient
      * @param _amount Amount of ETHs being withdrawed
      */
-    function withdraw(address payable _recipient, uint256 _amount)
+    function withdrawMoney(address payable _recipient, uint256 _amount)
         external
         payable
         onlyOwner
@@ -24,7 +24,7 @@ contract FeesStorage is Ownable {
             "Not enough ETHs in the storage"
         );
 
-        (bool success, ) = _recipient.call{value: _amount}("");
+        (bool success, ) = payable(_recipient).call{value: _amount}("");
         require(success, "Transfer failed.");
     }
 }

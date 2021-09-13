@@ -61,7 +61,7 @@ contract Game {
     modifier onlyOwner() {
         require(
             msg.sender == owner,
-            "You don't have the permissions to delete this game."
+            "You don't have the permissions to do this action."
         );
         _;
     }
@@ -69,7 +69,7 @@ contract Game {
     modifier onlyGameCreator() {
         require(
             msg.sender == player1,
-            "You don't have the permissions to delete this game."
+            "You don't have the permissions to do this action."
         );
         _;
     }
@@ -143,7 +143,7 @@ contract Game {
     {
         require(gameId != "", "Game already ended.");
         uint256 fee = (prizePool / 100) * 2;
-        storeFees(payable(0xd9145CCE52D386f254917e481eB44e9943F39138), fee);
+        storeFees(payable(0x8f0483125FCb9aaAEFA9209D8E9d7b9C8B9Fb90F), fee);
         (bool success, ) = _winner.call{value: prizePool - fee}("");
 
         require(success, "Transfer failed.");

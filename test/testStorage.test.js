@@ -20,22 +20,37 @@ contract("FeesStorage", () => {
       assert.strictEqual("0", balance);
     });
 
-    it("Should display 1 ETH as balance after sending 1 ETH", async () => {
+    it("Should display 10 ETH as balance after sending 10 ETH", async () => {
       await web3.eth.sendTransaction({
         to: storageInstance.address,
         from: accounts[0],
-        value: web3.utils.toWei("1", "ether"),
+        value: web3.utils.toWei("10", "ether"),
       });
       let balance = await web3.eth.getBalance(storageInstance.address);
-      assert.strictEqual(web3.utils.toWei("1", "ether"), balance);
+      assert.strictEqual(web3.utils.toWei("10", "ether"), balance);
     });
 
     it("Should allow the owner to withdraw some ETHs", async () => {
       let balance = await web3.eth.getBalance(storageInstance.address);
-      console.log(balance);
-      await storageInstance.withdraw(owner, web3.utils.toWei("0.01", "ether"));
+      await storageInstance.withdrawMoney(
+        accounts[1],
+        web3.utils.toWei("1", "ether"),
+        { from: owner }
+      );
+      balance = await web3.eth.getBalance(storageInstance.address);
+      assert.strictEqual(web3.utils.toWei("9", "ether"), balance);
+    });
 
-      assert.strictEqual(web3.utils.toWei("0.9", "ether"), balance);
+    it("Should revert if somebody other than the owner tries to withdraw some ETHs", async () => {
+      try {
+        await storageInstance.withdrawMoney(
+          accounts[1],
+          web3.utils.toWei("1", "ether"),
+          { from: accounts[1] }
+        );
+      } catch (err) {
+        assert(err);
+      }
     });
   });
 });
