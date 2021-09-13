@@ -4,18 +4,22 @@ contract("GameFactory", (accounts) => {
   let factory;
   let game;
 
-  beforeEach(async () => {
+  before(async () => {
     factory = await GameFactory.deployed();
   });
 
-  it("should assert true", async () => {
+  it("Should assert true", async () => {
     await GameFactory.deployed();
     return assert.isTrue(true);
   });
 
-  it("can deploy games", async () => {
-    await factory.createGame({ from: accounts[0], value: 100 });
+  it("Can deploy games", async () => {
+    await factory.createGame({
+      from: accounts[0],
+      value: web3.utils.toWei("10", "ether"),
+    });
     let gameAddress = await factory.getDeployedGames();
-    assert.ok(gameAddress[0]);
+    game = gameAddress[0];
+    assert.ok(game);
   });
 });
