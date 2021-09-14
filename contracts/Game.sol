@@ -11,16 +11,12 @@ contract GameFactory is Ownable {
     event GameCreated(Game game);
 
     /**
-     * @dev Allows a player to create a new game
+     * @dev Allows a player to instanciate a new game
      */
-    function createGame() external payable {
-        require(msg.value > 0, "You must stake some ETHs.");
-
-        address payable newGame = payable(address(new Game(msg.sender, owner)));
-        (bool success, ) = newGame.call{value: msg.value}("");
-
-        require(success, "Transfer failed.");
-
+    function instanciateGame() external {
+        address payable newGame = payable(
+            address(new Game(msg.sender, payable(owner)))
+        );
         deployedGames.push(newGame);
     }
 
@@ -33,7 +29,7 @@ contract GameFactory is Ownable {
 }
 
 contract Game {
-    address public owner;
+    address payable public owner;
     bytes32 public gameId;
     uint256 public prizePool;
     uint256 public bet;
@@ -59,6 +55,9 @@ contract Game {
     );
     event GameCancelled(bytes32 gameId);
 
+    /**
+     * @dev Throws if called by any account other than the owner.
+     */
     modifier onlyOwner() {
         require(
             msg.sender == owner,
@@ -67,6 +66,9 @@ contract Game {
         _;
     }
 
+    /**
+     * @dev Throws if called by any account other than the game creator.
+     */
     modifier onlyGameCreator() {
         require(
             msg.sender == player1,
@@ -75,6 +77,9 @@ contract Game {
         _;
     }
 
+    /**
+     * @dev Throws if called when the game is already full.
+     */
     modifier onlyIfPossible() {
         require(
             msg.sender != player2 && msg.sender != player1,
@@ -90,7 +95,7 @@ contract Game {
      * @param _gameCreator The address of the account who created the Game
      * @param _owner The address of the owner of the GameFactory
      */
-    constructor(address _gameCreator, address _owner) payable {
+    constructor(address _gameCreator, address payable _owner) payable {
         owner = _owner;
         gameId = bytes32(
             keccak256(abi.encodePacked(_gameCreator, blockhash(block.number)))
@@ -100,11 +105,19 @@ contract Game {
     }
 
     /**
+     * @dev Allows the account that instanciate the game to create the game, staking some ETHs
+     */
+    function createGame() external payable onlyGameCreator {
+        require(msg.value > 0, "You must stake some ETHs.");
+        prizePool += msg.value;
+        bet = msg.value;
+        emit GameCreated(gameId, player1, prizePool);
+    }
+
+    /**
      * @dev Fallback function
      */
     receive() external payable {
-        prizePool += msg.value;
-        bet = msg.value;
         emit Received(msg.sender, msg.value);
     }
 
@@ -125,7 +138,7 @@ contract Game {
     /**
      * @dev Allows the creator of the game to delete it, only if it hasn't already been accepted by an opponent
      */
-    function deleteGame() external payable onlyGameCreator {
+    function deleteGame() external onlyGameCreator {
         require(
             player2 == address(0),
             "Game already accepted. You can't delete it."
@@ -135,8 +148,8 @@ contract Game {
             (bool success, ) = owner.call{value: exceededAmount}("");
             require(success, "Transfer failed.");
         }
-        selfdestruct(player1);
         emit GameCancelled(gameId);
+        selfdestruct(player1);
     }
 
     /**
@@ -149,20 +162,20 @@ contract Game {
         onlyOwner
     {
         require(gameId != "", "Game already ended.");
+        require(_winner == player1 || _winner == player2);
         uint256 fee = (prizePool / 100) * 2;
-        storeFees(payable(0x8f0483125FCb9aaAEFA9209D8E9d7b9C8B9Fb90F), fee);
+        storeFees(
+            payable(address(0xd9145CCE52D386f254917e481eB44e9943F39138)),
+            fee
+        );
         (bool success, ) = _winner.call{value: prizePool - fee}("");
-
         require(success, "Transfer failed.");
 
         emit GameEnded(gameId, _winner, prizePool);
-
-        //resetState();
     }
 
     /**
-     * @dev Stores the fee's `_amount` to another contract
-     * at address `_storageAddress`
+     * @dev Stores the fee's `_amount` to another contract at address `_storageAddress`
      */
     function storeFees(address payable _storageAddress, uint256 _amount)
         internal
@@ -174,7 +187,7 @@ contract Game {
     /**
      * @dev Allows the `owner` of the Factory to cancel the game and give back the bets
      */
-    function cancelGame() external payable onlyOwner {
+    function cancelGame() external onlyOwner {
         require(gameId != "");
 
         if (player1 != address(0)) {
@@ -186,16 +199,5 @@ contract Game {
             require(success, "Transfer failed.");
         }
         selfdestruct(payable(owner));
-    }
-
-    /**
-     * @dev Resets the Game
-     */
-    function resetState() internal {
-        gameId = "";
-        player1 = payable(address(0));
-        player2 = payable(address(0));
-        prizePool = 0;
-        bet = 0;
     }
 }
