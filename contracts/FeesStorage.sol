@@ -5,7 +5,7 @@ import "./Ownable.sol";
 
 contract FeesStorage is Ownable {
     /**
-     * Fallback function
+     * @dev Fallback function
      */
     receive() external payable {}
 
