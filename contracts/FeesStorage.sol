@@ -27,4 +27,11 @@ contract FeesStorage is Ownable {
         (bool success, ) = payable(_recipient).call{value: _amount}("");
         require(success, "Transfer failed.");
     }
+
+    /**
+     * @dev Retrieve the balance of the contract
+     */
+    function getContractBalanace() external view returns (uint256) {
+        return address(this).balance;
+    }
 }

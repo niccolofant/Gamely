@@ -129,7 +129,6 @@ contract Game {
             msg.value == bet,
             "You must stake the same amount of ETHs as your opponent."
         );
-
         player2 = payable(msg.sender);
         prizePool += msg.value;
         emit GameAccepted(gameId, player1, player2, prizePool);
@@ -156,11 +155,7 @@ contract Game {
      * @dev Declares the winner of the Game and resets state variables
      * @param _winner Address of the winner
      */
-    function _declareWinner(address payable _winner)
-        external
-        payable
-        onlyOwner
-    {
+    function _declareWinner(address payable _winner) external onlyOwner {
         require(gameId != "", "Game already ended.");
         require(_winner == player1 || _winner == player2);
         uint256 fee = (prizePool / 100) * 2;
@@ -189,7 +184,6 @@ contract Game {
      */
     function cancelGame() external onlyOwner {
         require(gameId != "");
-
         if (player1 != address(0)) {
             (bool success, ) = player1.call{value: bet}("");
             require(success, "Transfer failed.");
@@ -198,6 +192,7 @@ contract Game {
             (bool success, ) = player2.call{value: bet}("");
             require(success, "Transfer failed.");
         }
+        emit GameCancelled(gameId);
         selfdestruct(payable(owner));
     }
 }
