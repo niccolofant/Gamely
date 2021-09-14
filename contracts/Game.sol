@@ -155,17 +155,16 @@ contract Game {
      * @dev Declares the winner of the Game and resets state variables
      * @param _winner Address of the winner
      */
-    function _declareWinner(address payable _winner) external onlyOwner {
+    function _declareWinner(
+        address payable _winner,
+        address payable _storageAddress
+    ) external onlyOwner {
         require(gameId != "", "Game already ended.");
         require(_winner == player1 || _winner == player2);
         uint256 fee = (prizePool / 100) * 2;
-        storeFees(
-            payable(address(0xd9145CCE52D386f254917e481eB44e9943F39138)),
-            fee
-        );
+        storeFees(payable(address(_storageAddress)), fee);
         (bool success, ) = _winner.call{value: prizePool - fee}("");
         require(success, "Transfer failed.");
-
         emit GameEnded(gameId, _winner, prizePool);
     }
 
