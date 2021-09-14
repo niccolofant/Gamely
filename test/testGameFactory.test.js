@@ -1,11 +1,11 @@
 const GameFactory = artifacts.require("GameFactory");
 
 contract("GameFactory", (accounts) => {
-  let factory;
-  let game;
+  let factoryInstance;
+  let gameInstance;
 
   before(async () => {
-    factory = await GameFactory.deployed();
+    factoryInstance = await GameFactory.deployed();
   });
 
   it("Should assert true", async () => {
@@ -14,12 +14,11 @@ contract("GameFactory", (accounts) => {
   });
 
   it("Can deploy games", async () => {
-    await factory.createGame({
+    await factoryInstance.instanciateGame({
       from: accounts[0],
-      value: web3.utils.toWei("10", "ether"),
     });
-    let gameAddress = await factory.getDeployedGames();
-    game = gameAddress[0];
-    assert.ok(game);
+    let gameAddress = await factoryInstance.getDeployedGames();
+    gameInstance = gameAddress[0];
+    assert.ok(gameInstance);
   });
 });

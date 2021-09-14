@@ -1,21 +1,24 @@
 const GameFactory = artifacts.require("GameFactory");
 const Game = artifacts.require("Game");
+const FeesStorage = artifacts.require("FeesStorage");
 
 contract("Game", (accounts) => {
-  let factory;
+  let factoryInstance;
   let gameInstance;
+  let storageInstance;
   let owner;
   let player1;
   let player2;
 
   before(async () => {
-    factory = await GameFactory.deployed();
-    await factory.createGame({
+    factoryInstance = await GameFactory.deployed();
+    storageInstance = await FeesStorage.deployed();
+    await factoryInstance.instanciateGame({
       from: accounts[1],
       value: web3.utils.toWei("10", "ether"),
     });
     let games = await factory.getDeployedGames();
-    owner = await factory.owner();
+    owner = await factoryInstance.owner();
     gameInstance = await Game.at(games[0]);
   });
 
@@ -28,7 +31,7 @@ contract("Game", (accounts) => {
     let bet = await gameInstance.bet();
     assert.strictEqual(web3.utils.toWei("10", "ether"), bet.toString());
   });
-
+  /*
   it("Should allow the creator to delete the game before anyone accepts it, giving the bet amount to him and any exceeding ETHs to the owner", async () => {
     let player1Balance = await web3.eth.getBalance(player1);
     let ownerBalance = await web3.eth.getBalance(owner);
@@ -53,7 +56,7 @@ contract("Game", (accounts) => {
     let contractBalance = await web3.eth.getBalance(gameInstance.address);
     assert.strictEqual("0", contractBalance);
   });
-  /*
+  */
   it("Should revert if a player tries to join the game with a different amount of ETHs", async () => {
     try {
       await gameInstance.joinGame({
@@ -93,5 +96,5 @@ contract("Game", (accounts) => {
     } catch (err) {
       assert(err);
     }
-  });*/
+  });
 });
