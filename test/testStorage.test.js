@@ -1,23 +1,18 @@
 const FeesStorage = artifacts.require("FeesStorage");
-const Ownable = artifacts.require("Ownable");
 
-contract("FeesStorage", () => {
+contract("FeesStorage", (accounts) => {
   let storageInstance;
-  let ownableInstance;
-  let accounts;
   let owner;
 
   before(async () => {
     storageInstance = await FeesStorage.deployed();
-    ownableInstance = await Ownable.deployed();
-    accounts = await web3.eth.getAccounts();
     owner = await storageInstance.owner();
   });
 
   describe("FeesStorage", async () => {
     it("Initial balance should be 0 ETHs", async () => {
-      let balance = await web3.eth.getBalance(storageInstance.address);
-      assert.strictEqual("0", balance);
+      let balance = await storageInstance.getContractBalance();
+      assert.strictEqual("0", balance.toString());
     });
 
     it("Should display 10 ETH as balance after sending 10 ETH", async () => {
@@ -26,19 +21,30 @@ contract("FeesStorage", () => {
         from: accounts[0],
         value: web3.utils.toWei("10", "ether"),
       });
-      let balance = await web3.eth.getBalance(storageInstance.address);
-      assert.strictEqual(web3.utils.toWei("10", "ether"), balance);
+      let balance = await storageInstance.getContractBalance();
+      assert.strictEqual(web3.utils.toWei("10", "ether"), balance.toString());
+    });
+
+    it("Should revert if the amount of ETHs to withdraw is bigger than the contract's balance", async () => {
+      try {
+        await storageInstance.withdrawMoney(
+          accounts[1],
+          web3.utils.toWei("1000", "ether"),
+          { from: owner }
+        );
+      } catch (err) {
+        assert(err);
+      }
     });
 
     it("Should allow the owner to withdraw some ETHs", async () => {
-      let balance = await web3.eth.getBalance(storageInstance.address);
       await storageInstance.withdrawMoney(
         accounts[1],
         web3.utils.toWei("1", "ether"),
         { from: owner }
       );
-      balance = await web3.eth.getBalance(storageInstance.address);
-      assert.strictEqual(web3.utils.toWei("9", "ether"), balance);
+      let balance = await storageInstance.getContractBalance();
+      assert.strictEqual(web3.utils.toWei("9", "ether"), balance.toString());
     });
 
     it("Should revert if somebody other than the owner tries to withdraw some ETHs", async () => {

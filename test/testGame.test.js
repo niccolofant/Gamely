@@ -15,22 +15,26 @@ contract("Game", (accounts) => {
     storageInstance = await FeesStorage.deployed();
     await factoryInstance.instanciateGame({
       from: accounts[1],
-      value: web3.utils.toWei("10", "ether"),
     });
-    let games = await factory.getDeployedGames();
+    let games = await factoryInstance.getDeployedGames();
     owner = await factoryInstance.owner();
     gameInstance = await Game.at(games[0]);
   });
 
-  it("Should display the account who created a new game as `player1`", async () => {
+  it("Should display the account who instanciated a new game as `player1`", async () => {
     player1 = await gameInstance.player1();
     assert.strictEqual(accounts[1], player1);
   });
 
-  it("Shows the correct bet amount", async () => {
+  it("Should allow the player who instanciated the game to create the game and stake some ETHs", async () => {
+    await gameInstance.createGame({
+      from: player1,
+      value: web3.utils.toWei("0.01", "ether"),
+    });
     let bet = await gameInstance.bet();
-    assert.strictEqual(web3.utils.toWei("10", "ether"), bet.toString());
+    assert.strictEqual(web3.utils.toWei("0.01", "ether"), bet.toString());
   });
+
   /*
   it("Should allow the creator to delete the game before anyone accepts it, giving the bet amount to him and any exceeding ETHs to the owner", async () => {
     let player1Balance = await web3.eth.getBalance(player1);
@@ -71,7 +75,7 @@ contract("Game", (accounts) => {
   it("Allows a new player to join the game, only if he stakes the same amount of ETHs", async () => {
     await gameInstance.joinGame({
       from: accounts[2],
-      value: web3.utils.toWei("10", "ether"),
+      value: web3.utils.toWei("0.01", "ether"),
     });
     player2 = await gameInstance.player2();
     assert.strictEqual(accounts[2], player2);
