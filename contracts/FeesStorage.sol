@@ -31,7 +31,7 @@ contract FeesStorage is Ownable {
     /**
      * @dev Retrieve the balance of the contract
      */
-    function getContractBalanace() external view returns (uint256) {
+    function getContractBalance() external view returns (uint256) {
         return address(this).balance;
     }
 }
