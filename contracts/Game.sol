@@ -160,6 +160,7 @@ contract Game {
         address payable _winner,
         address payable _storageAddress
     ) external onlyOwner {
+        require(player1 != address(0) && player2 != address(0));
         require(gameId != "", "Game already ended.");
         require(_winner == player1 || _winner == player2);
         uint256 fee = (prizePool / 100) * 2;
