@@ -95,7 +95,7 @@ contract Game {
      * @param _gameCreator The address of the account who created the Game
      * @param _owner The address of the owner of the GameFactory
      */
-    constructor(address _gameCreator, address payable _owner) payable {
+    constructor(address _gameCreator, address payable _owner) {
         owner = _owner;
         gameId = bytes32(
             keccak256(abi.encodePacked(_gameCreator, blockhash(block.number)))
@@ -154,15 +154,16 @@ contract Game {
     /**
      * @dev Declares the winner of the Game and resets state variables
      * @param _winner Address of the winner
+     * @param _storageAddress Address of the account that store the fees
      */
-    function _declareWinner(
+    function declareWinner(
         address payable _winner,
         address payable _storageAddress
     ) external onlyOwner {
         require(gameId != "", "Game already ended.");
         require(_winner == player1 || _winner == player2);
         uint256 fee = (prizePool / 100) * 2;
-        storeFees(payable(address(_storageAddress)), fee);
+        _storeFees(payable(address(_storageAddress)), fee);
         (bool success, ) = _winner.call{value: prizePool - fee}("");
         require(success, "Transfer failed.");
         emit GameEnded(gameId, _winner, prizePool);
@@ -170,8 +171,10 @@ contract Game {
 
     /**
      * @dev Stores the fee's `_amount` to another contract at address `_storageAddress`
+     * @param _storageAddress Address of the account that store the fees
+     * @param _amount Amount of ETHs to store in the storage
      */
-    function storeFees(address payable _storageAddress, uint256 _amount)
+    function _storeFees(address payable _storageAddress, uint256 _amount)
         internal
     {
         (bool success, ) = _storageAddress.call{value: _amount}("");
