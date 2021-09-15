@@ -8,7 +8,6 @@ contract("Game", (accounts) => {
   let storageInstance;
   let owner;
   let player1;
-  let player2;
 
   beforeEach(async () => {
     factoryInstance = await GameFactory.new();
@@ -37,11 +36,19 @@ contract("Game", (accounts) => {
         assert.strictEqual(web3.utils.toWei("0.01", "ether"), bet.toString());
       });
 
+      it("Should display the correct bet amount after the player who instanciated the game creates the game", async () => {
+        await gameInstance.createGame({
+          from: player1,
+          value: web3.utils.toWei("0.01", "ether"),
+        });
+        let bet = await gameInstance.bet();
+        assert.strictEqual(web3.utils.toWei("0.01", "ether"), bet.toString());
+      });
+
       it("Should revert if the player who instanciated the game tries to create a game without staking any ETHs", async () => {
         try {
           await gameInstance.createGame({
             from: player1,
-            value: web3.utils.toWei("0.01", "ether"),
           });
           assert(false);
         } catch (err) {
@@ -53,6 +60,90 @@ contract("Game", (accounts) => {
         try {
           await gameInstance.createGame({
             from: accounts[5],
+            value: web3.utils.toWei("0.01", "ether"),
+          });
+          assert(false);
+        } catch (err) {
+          assert(err);
+        }
+      });
+    });
+
+    describe("joinGame() function", async () => {
+      it("Should revert if the game creator tries to join his own game", async () => {
+        await gameInstance.createGame({
+          from: player1,
+          value: web3.utils.toWei("0.01", "ether"),
+        });
+        try {
+          await gameInstance.joinGame({
+            from: player1,
+            value: web3.utils.toWei("0.01", "ether"),
+          });
+          assert(false);
+        } catch (err) {
+          assert(err);
+        }
+      });
+
+      it("Allows a player to join a game, if he stakes the same amount of ETHs as the `bet` amount", async () => {
+        await gameInstance.createGame({
+          from: player1,
+          value: web3.utils.toWei("0.01", "ether"),
+        });
+        let bet = await gameInstance.bet();
+        await gameInstance.joinGame({
+          from: accounts[2],
+          value: bet,
+        });
+        let player2 = await gameInstance.player2();
+        assert.strictEqual(accounts[2], player2);
+      });
+
+      it("Should revert if a player tries to join the game with a different amount of ETHs", async () => {
+        await gameInstance.createGame({
+          from: player1,
+          value: web3.utils.toWei("0.01", "ether"),
+        });
+        try {
+          await gameInstance.joinGame({
+            from: accounts[2],
+            value: web3.utils.toWei("10", "ether"),
+          });
+          assert(false);
+        } catch (err) {
+          assert(err);
+        }
+      });
+
+      it("Should display the correct prize pool after somebody joins the game", async () => {
+        await gameInstance.createGame({
+          from: player1,
+          value: web3.utils.toWei("0.01", "ether"),
+        });
+        await gameInstance.joinGame({
+          from: accounts[2],
+          value: web3.utils.toWei("0.01", "ether"),
+        });
+        let prizePool = await gameInstance.prizePool();
+        assert.strictEqual(
+          web3.utils.toWei("0.02", "ether"),
+          prizePool.toString()
+        );
+      });
+
+      it("Should revert if somebody tries to join the game when it is already full", async () => {
+        await gameInstance.createGame({
+          from: player1,
+          value: web3.utils.toWei("0.01", "ether"),
+        });
+        await gameInstance.joinGame({
+          from: accounts[2],
+          value: web3.utils.toWei("0.01", "ether"),
+        });
+        try {
+          await gameInstance.joinGame({
+            from: accounts[2],
             value: web3.utils.toWei("0.01", "ether"),
           });
           assert(false);
@@ -126,57 +217,93 @@ contract("Game", (accounts) => {
           await gameInstance.deleteGame({
             from: player1,
           });
+          assert(false);
+        } catch (err) {
+          assert(err);
+        }
+      });
+
+      it("Should revert if any account other than the game creator tries to call it", async () => {
+        await gameInstance.createGame({
+          from: player1,
+          value: web3.utils.toWei("0.01", "ether"),
+        });
+        try {
+          await gameInstance.deleteGame({
+            from: accounts[5],
+          });
+          assert(false);
         } catch (err) {
           assert(err);
         }
       });
     });
 
-    it("Should revert if a player tries to join the game with a different amount of ETHs", async () => {
-      await gameInstance.createGame({
-        from: player1,
-        value: web3.utils.toWei("0.01", "ether"),
-      });
-      try {
-        await gameInstance.joinGame({
-          from: accounts[2],
-          value: web3.utils.toWei("15", "ether"),
-        });
-      } catch (err) {
-        assert(err);
-      }
-    });
-
-    it("Allows a new player to join the game, only if he stakes the same amount of ETHs", async () => {
-      await gameInstance.createGame({
-        from: player1,
-        value: web3.utils.toWei("0.01", "ether"),
-      });
-      await gameInstance.joinGame({
-        from: accounts[2],
-        value: web3.utils.toWei("0.01", "ether"),
-      });
-      player2 = await gameInstance.player2();
-      assert.strictEqual(accounts[2], player2);
-    });
-
-    it("Should revert if a player tries to join an already full game", async () => {
-      await gameInstance.createGame({
-        from: player1,
-        value: web3.utils.toWei("0.01", "ether"),
-      });
-      await gameInstance.joinGame({
-        from: accounts[2],
-        value: web3.utils.toWei("0.01", "ether"),
-      });
-      try {
-        await gameInstance.joinGame({
-          from: accounts[3],
+    describe("declareWinner() function", async () => {
+      it("Should send the prize pool (minus the 2% fee) to the winner", async () => {
+        await gameInstance.createGame({
+          from: player1,
           value: web3.utils.toWei("10", "ether"),
         });
-      } catch (err) {
-        assert(err);
-      }
+        let initialPlayer1Balance = await web3.eth.getBalance(player1);
+        await gameInstance.joinGame({
+          from: accounts[2],
+          value: web3.utils.toWei("10", "ether"),
+        });
+        await gameInstance.declareWinner(player1, storageInstance.address, {
+          from: owner,
+        });
+        let finalPlayer1Balance = await web3.eth.getBalance(player1);
+        let prizePool = await gameInstance.prizePool();
+        let fee = (parseInt(prizePool.toString()) / 100) * 2;
+        assert.strictEqual(
+          parseInt(initialPlayer1Balance) +
+            parseInt(web3.utils.toWei("20", "ether")) -
+            fee,
+          parseInt(finalPlayer1Balance)
+        );
+      });
+
+      it("Should send the 2% fee to the storage contract", async () => {
+        let initialStorageBalance = await web3.eth.getBalance(
+          storageInstance.address
+        );
+        await gameInstance.createGame({
+          from: player1,
+          value: web3.utils.toWei("10", "ether"),
+        });
+        await gameInstance.joinGame({
+          from: accounts[2],
+          value: web3.utils.toWei("10", "ether"),
+        });
+        await gameInstance.declareWinner(player1, storageInstance.address, {
+          from: owner,
+        });
+        let prizePool = await gameInstance.prizePool();
+        let fee = (parseInt(prizePool.toString()) / 100) * 2;
+        let finalStorageBalance = await web3.eth.getBalance(
+          storageInstance.address
+        );
+        assert.strictEqual(
+          parseInt(initialStorageBalance) + fee,
+          parseInt(finalStorageBalance)
+        );
+      });
+
+      it("Should revert if the owner tries to call it when the game is not full", async () => {
+        await gameInstance.createGame({
+          from: player1,
+          value: web3.utils.toWei("0.01", "ether"),
+        });
+        try {
+          await gameInstance.declareWinner(player1, storageInstance.address, {
+            from: owner,
+          });
+          assert(false);
+        } catch (err) {
+          assert(err);
+        }
+      });
     });
   });
 });
