@@ -4,16 +4,11 @@ contract("GameFactory", (accounts) => {
   let factoryInstance;
   let gameInstance;
 
-  before(async () => {
+  beforeEach(async () => {
     factoryInstance = await GameFactory.new();
   });
 
   describe("GameFactory", async () => {
-    it("Should assert true", async () => {
-      await GameFactory.deployed();
-      return assert.isTrue(true);
-    });
-
     it("Can deploy games", async () => {
       await factoryInstance.instanciateGame({
         from: accounts[0],
@@ -21,6 +16,20 @@ contract("GameFactory", (accounts) => {
       let gameAddress = await factoryInstance.getDeployedGames();
       gameInstance = gameAddress[0];
       assert.ok(gameInstance);
+    });
+
+    it("Should retrieve deployed games", async () => {
+      await factoryInstance.instanciateGame({
+        from: accounts[0],
+      });
+      await factoryInstance.instanciateGame({
+        from: accounts[1],
+      });
+      await factoryInstance.instanciateGame({
+        from: accounts[2],
+      });
+      let games = await factoryInstance.getDeployedGames();
+      assert.strictEqual(3, games.length);
     });
   });
 });
