@@ -27,44 +27,42 @@ contract("Game", (accounts) => {
       assert.strictEqual(accounts[1], player1);
     });
 
-    it("Should allow the player who instanciated the game to create the game and stake some ETHs", async () => {
-      await gameInstance.createGame({
-        from: player1,
-        value: web3.utils.toWei("0.01", "ether"),
+    describe("createGame() function", async () => {
+      it("Should allow the player who instanciated the game to create the game and stake some ETHs", async () => {
+        await gameInstance.createGame({
+          from: player1,
+          value: web3.utils.toWei("0.01", "ether"),
+        });
+        let bet = await gameInstance.bet();
+        assert.strictEqual(web3.utils.toWei("0.01", "ether"), bet.toString());
       });
-      let bet = await gameInstance.bet();
-      assert.strictEqual(web3.utils.toWei("0.01", "ether"), bet.toString());
+
+      it("Should revert if the player who instanciated the game tries to create a game without staking any ETHs", async () => {
+        try {
+          await gameInstance.createGame({
+            from: player1,
+            value: web3.utils.toWei("0.01", "ether"),
+          });
+          assert(false);
+        } catch (err) {
+          assert(err);
+        }
+      });
+
+      it("Should revert if anyone other than the player who instanciated the game tries to create the game", async () => {
+        try {
+          await gameInstance.createGame({
+            from: accounts[5],
+            value: web3.utils.toWei("0.01", "ether"),
+          });
+          assert(false);
+        } catch (err) {
+          assert(err);
+        }
+      });
     });
 
-    /*it("Should allow the creator to delete the game before anyone accepts it, giving the bet amount to him and any exceeding ETHs to the owner", async () => {
-      let player1Balance = await web3.eth.getBalance(player1);
-      let ownerBalance = await web3.eth.getBalance(owner);
-      console.log("player1: " + player1Balance);
-      console.log("owner: " + ownerBalance);
-      await web3.eth.sendTransaction({
-        to: gameInstance.address,
-        from: accounts[0],
-        value: web3.utils.toWei("10", "ether"),
-      });
-      await gameInstance.createGame({
-        from: player1,
-        value: web3.utils.toWei("0.01", "ether"),
-      });
-      await gameInstance.deleteGame({
-        from: player1,
-      });
-      player1Balance = await web3.eth.getBalance(player1);
-      ownerBalance = await web3.eth.getBalance(owner);
-
-      //let newPlayerBalance = parseInt(player1Balance) + 10000000000000000000;
-      //let newOwnerBalance = parseInt(ownerBalance) + 50000000000000000000;
-      console.log("player1: " + player1Balance);
-      console.log("owner: " + ownerBalance);
-      let contractBalance = await web3.eth.getBalance(gameInstance.address);
-      assert.strictEqual("0", contractBalance);
-    });
-*/
-    describe("deleteGame() function, if nobody already joined the game", async () => {
+    describe("deleteGame() function", async () => {
       it("When the game creator calls it, it frees up contract's balance", async () => {
         await gameInstance.createGame({
           from: player1,
