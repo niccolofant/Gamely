@@ -30,30 +30,20 @@ contract GameFactory is Ownable {
 
 contract Game {
     address payable public owner;
-    bytes32 public gameId;
     uint256 public prizePool;
     uint256 public bet;
     address payable public player1;
     address payable public player2;
 
     event Received(address sender, uint256 value);
-    event GameCreated(
-        bytes32 indexed gameId,
-        address indexed player1,
-        uint256 prizePool
-    );
+    event GameCreated(address indexed player1, uint256 prizePool);
     event GameAccepted(
-        bytes32 indexed gameId,
         address indexed player1,
         address indexed player2,
         uint256 prizePool
     );
-    event GameEnded(
-        bytes32 indexed gameId,
-        address indexed winner,
-        uint256 prizePool
-    );
-    event GameCancelled(bytes32 gameId);
+    event GameEnded(address indexed winner, uint256 prizePool);
+    event GameCancelled();
 
     /**
      * @dev Throws if called by any account other than the owner.
@@ -97,11 +87,8 @@ contract Game {
      */
     constructor(address _gameCreator, address payable _owner) {
         owner = _owner;
-        gameId = bytes32(
-            keccak256(abi.encodePacked(_gameCreator, blockhash(block.number)))
-        );
         player1 = payable(_gameCreator);
-        emit GameCreated(gameId, player1, prizePool);
+        emit GameCreated(player1, prizePool);
     }
 
     /**
@@ -111,7 +98,7 @@ contract Game {
         require(msg.value > 0, "You must stake some ETHs.");
         prizePool += msg.value;
         bet = msg.value;
-        emit GameCreated(gameId, player1, prizePool);
+        emit GameCreated(player1, prizePool);
     }
 
     /**
@@ -131,7 +118,7 @@ contract Game {
         );
         player2 = payable(msg.sender);
         prizePool += msg.value;
-        emit GameAccepted(gameId, player1, player2, prizePool);
+        emit GameAccepted(player1, player2, prizePool);
     }
 
     /**
@@ -147,7 +134,7 @@ contract Game {
             (bool success, ) = owner.call{value: exceededAmount}("");
             require(success, "Transfer failed.");
         }
-        emit GameCancelled(gameId);
+        emit GameCancelled();
         selfdestruct(player1);
     }
 
@@ -161,13 +148,12 @@ contract Game {
         address payable _storageAddress
     ) external onlyOwner {
         require(player1 != address(0) && player2 != address(0));
-        require(gameId != "", "Game already ended.");
         require(_winner == player1 || _winner == player2);
         uint256 fee = (prizePool / 100) * 2;
         _storeFees(payable(address(_storageAddress)), fee);
         (bool success, ) = _winner.call{value: prizePool - fee}("");
         require(success, "Transfer failed.");
-        emit GameEnded(gameId, _winner, prizePool);
+        emit GameEnded(_winner, prizePool);
     }
 
     /**
@@ -186,7 +172,6 @@ contract Game {
      * @dev Allows the `owner` of the Factory to cancel the game and give back the bets
      */
     function cancelGame() external onlyOwner {
-        require(gameId != "");
         if (player1 != address(0)) {
             (bool success, ) = player1.call{value: bet}("");
             require(success, "Transfer failed.");
@@ -195,7 +180,7 @@ contract Game {
             (bool success, ) = player2.call{value: bet}("");
             require(success, "Transfer failed.");
         }
-        emit GameCancelled(gameId);
-        selfdestruct(payable(owner));
+        emit GameCancelled();
+        selfdestruct(owner);
     }
 }
