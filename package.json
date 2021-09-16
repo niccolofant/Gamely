@@ -1,0 +1,29 @@
+{
+  "name": "gamely",
+  "version": "1.0.0",
+  "description": "Blockchain based duel game",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ocintnaf/Gamely.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ocintnaf/Gamely/issues"
+  },
+  "homepage": "https://github.com/ocintnaf/Gamely#readme",
+  "dependencies": {
+    "fs-extra": "^10.0.0",
+    "ganache-cli": "^6.12.2",
+    "mocha": "^9.1.1",
+    "solc": "^0.8.7-fixed",
+    "web3": "^1.5.2"
+  }
+}
