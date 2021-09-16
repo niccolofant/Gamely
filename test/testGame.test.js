@@ -166,19 +166,27 @@ contract("Game", (accounts) => {
         assert.strictEqual("0", balance);
       });
 
-      it("When the game creator calls it, it send back to him the bet's amount", async () => {
+      it("When the game creator calls it, it send back to him the bet amount (minus gas fees)", async () => {
         let initialPlayer1Balance = await web3.eth.getBalance(player1);
-        await gameInstance.createGame({
+        let createGameReceipt = await gameInstance.createGame({
           from: player1,
           value: web3.utils.toWei("0.01", "ether"),
         });
-        await gameInstance.deleteGame({
+        let gasUsedCreateGame = createGameReceipt.receipt.gasUsed;
+        //total cost = gas used * gas price
+        let createGameCost = gasUsedCreateGame * 20000000000;
+        let deleteGameReceipt = await gameInstance.deleteGame({
           from: player1,
         });
+        let gasUsedDeleteGame = deleteGameReceipt.receipt.gasUsed;
+        let deleteGameCost = gasUsedDeleteGame * 20000000000; //gas price
         let finalPlayer1Balance = await web3.eth.getBalance(player1);
-        assert.ok(
-          parseInt(finalPlayer1Balance) >
-            parseInt(initialPlayer1Balance) - 2000000000000000
+        assert(
+          parseInt(initialPlayer1Balance) <=
+            parseInt(finalPlayer1Balance) +
+              createGameCost +
+              deleteGameCost +
+              10000
         );
       });
 
@@ -240,6 +248,22 @@ contract("Game", (accounts) => {
     });
 
     describe("declareWinner() function", async () => {
+      it("When the game creator calls it, it frees up contract's balance", async () => {
+        await gameInstance.createGame({
+          from: player1,
+          value: web3.utils.toWei("10", "ether"),
+        });
+        await gameInstance.joinGame({
+          from: accounts[2],
+          value: web3.utils.toWei("10", "ether"),
+        });
+        await gameInstance.declareWinner(player1, storageInstance.address, {
+          from: owner,
+        });
+        let balance = await web3.eth.getBalance(gameInstance.address);
+        assert.strictEqual("0", balance.toString());
+      });
+
       it("Should send the prize pool (minus the 2% fee) to the winner", async () => {
         await gameInstance.createGame({
           from: player1,
@@ -303,6 +327,96 @@ contract("Game", (accounts) => {
         } catch (err) {
           assert(err);
         }
+      });
+
+      it("Should revert if any account other than the owner tries to call it", async () => {
+        await gameInstance.createGame({
+          from: player1,
+          value: web3.utils.toWei("10", "ether"),
+        });
+        await gameInstance.joinGame({
+          from: accounts[2],
+          value: web3.utils.toWei("10", "ether"),
+        });
+        try {
+          await gameInstance.declareWinner(player1, storageInstance.address, {
+            from: accounts[1],
+          });
+          assert(false);
+        } catch (err) {
+          assert(err);
+        }
+      });
+    });
+
+    describe("cancelGame() function", async () => {
+      it("Should revert if any account other than the owner tries to call it", async () => {
+        await gameInstance.createGame({
+          from: player1,
+          value: web3.utils.toWei("0.01", "ether"),
+        });
+        try {
+          await gameInstance.cancelGame({
+            from: player1,
+          });
+          assert(false);
+        } catch (err) {
+          assert(err);
+        }
+      });
+
+      it("Allows the owner to cancel the game at any time clearing contract balance", async () => {
+        await gameInstance.createGame({
+          from: player1,
+          value: web3.utils.toWei("0.01", "ether"),
+        });
+        await gameInstance.cancelGame({
+          from: owner,
+        });
+        let balance = await web3.eth.getBalance(gameInstance.address);
+        assert.strictEqual("0", balance.toString());
+      });
+
+      it("Sends to the owner any exceeding amount of ETHs", async () => {
+        let initialOwnerBalance = await web3.eth.getBalance(owner);
+        await web3.eth.sendTransaction({
+          to: gameInstance.address,
+          from: accounts[5],
+          value: web3.utils.toWei("10", "ether"),
+        });
+        await gameInstance.createGame({
+          from: player1,
+          value: web3.utils.toWei("0.01", "ether"),
+        });
+        let cancelGameReceipt = await gameInstance.cancelGame({
+          from: owner,
+        });
+        let gasUsedCancelGame = cancelGameReceipt.receipt.gasUsed;
+        let cancelGameCost = gasUsedCancelGame * 20000000000;
+        let finalOwnerBalance = await web3.eth.getBalance(owner);
+        assert(
+          parseInt(finalOwnerBalance) <=
+            parseInt(initialOwnerBalance) +
+              parseInt(web3.utils.toWei("10", "ether") - cancelGameCost + 10000)
+        );
+      });
+
+      it("Sends back to any player in the game his bet", async () => {
+        let initialPlayer1Balance = await web3.eth.getBalance(player1);
+        let createGameReceipt = await gameInstance.createGame({
+          from: player1,
+          value: web3.utils.toWei("10", "ether"),
+        });
+        await gameInstance.cancelGame({
+          from: owner,
+        });
+        let finalPlayer1Balance = await web3.eth.getBalance(player1);
+        let gasUsedCreateGame = createGameReceipt.receipt.gasUsed;
+        let createGameCost = gasUsedCreateGame * 20000000000;
+        assert(
+          parseInt(finalPlayer1Balance) <=
+            parseInt(initialPlayer1Balance) - createGameCost + 10000
+        );
       });
     });
   });
