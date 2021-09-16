@@ -88,7 +88,6 @@ contract Game {
     constructor(address _gameCreator, address payable _owner) {
         owner = _owner;
         player1 = payable(_gameCreator);
-        emit GameCreated(player1, prizePool);
     }
 
     /**
@@ -129,13 +128,10 @@ contract Game {
             player2 == address(0),
             "Game already accepted. You can't delete it."
         );
-        uint256 exceededAmount = address(this).balance - bet;
-        if (exceededAmount > 0) {
-            (bool success, ) = owner.call{value: exceededAmount}("");
-            require(success, "Transfer failed.");
-        }
+        (bool success, ) = player1.call{value: bet}("");
+        require(success, "Transfer failed.");
         emit GameCancelled();
-        selfdestruct(player1);
+        selfdestruct(owner);
     }
 
     /**
@@ -154,6 +150,7 @@ contract Game {
         (bool success, ) = _winner.call{value: prizePool - fee}("");
         require(success, "Transfer failed.");
         emit GameEnded(_winner, prizePool);
+        //selfdestruct(owner);
     }
 
     /**
