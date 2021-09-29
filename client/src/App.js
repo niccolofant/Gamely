@@ -1,7 +1,8 @@
-import Button from "@mui/material/Button";
+import ConnectButton from "./components/ConnectButton";
+import "./App.css";
 
 function App() {
-  return <Button variant="contained">Hello World</Button>;
+  return <ConnectButton />;
 }
 
 export default App;
