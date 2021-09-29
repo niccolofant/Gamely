@@ -24,7 +24,13 @@ function ConnectButton() {
       </Typography>
     </Box>
   ) : (
-    <Button onClick={handleConnectWallet}>Connect to a Wallet</Button>
+    <Button
+      onClick={handleConnectWallet}
+      variant="outlined"
+      sx={{ background: "#1a2030", color: "#5479f7" }}
+    >
+      Connect to a Wallet
+    </Button>
   );
 }
 
