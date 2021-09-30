@@ -1,6 +1,7 @@
-import { Button, Box, Typography } from "@mui/material";
+import { Button, Box, Typography, Tooltip } from "@mui/material";
 import { useEthers, useEtherBalance } from "@usedapp/core";
 import { formatEther } from "@ethersproject/units";
+import Identicon from "./Identicon.tsx";
 
 function ConnectButton() {
   const { activateBrowserWallet, account } = useEthers();
@@ -11,17 +12,37 @@ function ConnectButton() {
   }
 
   return account ? (
-    <Box>
-      <Typography>
-        {etherBalance && parseFloat(formatEther(etherBalance)).toFixed(3)} ETH
-      </Typography>
-      <Typography>
-        {account &&
-          `${account.slice(0, 6)}...${account.slice(
-            account.length - 4,
-            account.length
-          )}`}
-      </Typography>
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+      }}
+    >
+      <Box px="3">
+        <Tooltip title="Balance">
+          <Typography fontSize="md">
+            {etherBalance && parseFloat(formatEther(etherBalance)).toFixed(2)}{" "}
+            ETH
+          </Typography>
+        </Tooltip>
+      </Box>
+      <Button
+        sx={{
+          height: "38px",
+          border: "1px solid transparent",
+        }}
+      >
+        <Tooltip title="Account settings">
+          <Typography>
+            {account &&
+              `${account.slice(0, 6)}...${account.slice(
+                account.length - 4,
+                account.length
+              )}`}
+          </Typography>
+        </Tooltip>
+        <Identicon />
+      </Button>
     </Box>
   ) : (
     <Button

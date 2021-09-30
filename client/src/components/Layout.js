@@ -9,8 +9,8 @@ import ConnectButton from "./ConnectButton";
 function Layout(props) {
   return (
     <React.Fragment>
-      <Box sx={{ flexGrow: 1 }}>
-        <Grid container spacing={2}>
+      <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
+        <Grid container spacing={5}>
           <Grid item xs={4}>
             <Header />
           </Grid>
@@ -23,7 +23,7 @@ function Layout(props) {
         </Grid>
       </Box>
 
-      <div className="navitationWrapper">
+      <div className="navigationWrapper">
         <main>{props.children}</main>
       </div>
     </React.Fragment>
