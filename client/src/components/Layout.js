@@ -1,7 +1,5 @@
 import React from "react";
 import Header from "./Header";
-import Navigation from "./Navigation";
-import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import ConnectButton from "./ConnectButton";
@@ -9,21 +7,30 @@ import ConnectButton from "./ConnectButton";
 function Layout(props) {
   return (
     <React.Fragment>
-      <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
-        <Grid container spacing={5}>
-          <Grid item xs={4}>
+      <Box sx={{ marginTop: "20px" }}>
+        <Grid
+          container
+          spacing={5}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            textAlign: "center",
+          }}
+        >
+          <Grid item xs={3}>
             <Header />
           </Grid>
-          <Grid item xs={4}>
-            <Navigation />
-          </Grid>
-          <Grid item xs={4}>
+          <Grid xs={6}></Grid>
+          <Grid item xs={3}>
             <ConnectButton />
           </Grid>
         </Grid>
       </Box>
 
-      <div className="navigationWrapper">
+      <div
+        className="navigationWrapper"
+        style={{ borderTop: "1px solid grey ", marginTop: "20px" }}
+      >
         <main>{props.children}</main>
       </div>
     </React.Fragment>

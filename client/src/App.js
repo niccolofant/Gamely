@@ -1,13 +1,13 @@
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import About from "./components/About";
+import { BrowserRouter as Router, Route } from "react-router-dom";
+
 import GamelyApp from "./components/GamelyApp";
 import Layout from "./components/Layout";
+import "./App.css";
 
 function App() {
   return (
     <Router>
       <Layout>
-        <Route path="/about" component={About} />
         <Route path="/app" component={GamelyApp} />
       </Layout>
     </Router>

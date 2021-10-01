@@ -18,7 +18,7 @@ function ConnectButton() {
         alignItems: "center",
       }}
     >
-      <Box px="3">
+      <Box>
         <Tooltip title="Balance">
           <Typography fontSize="md">
             {etherBalance && parseFloat(formatEther(etherBalance)).toFixed(2)}{" "}
@@ -29,7 +29,9 @@ function ConnectButton() {
       <Button
         sx={{
           height: "38px",
-          border: "1px solid transparent",
+          border: "1px solid grey",
+          borderRadius: "24px",
+          margin: "10px",
         }}
       >
         <Tooltip title="Account settings">
@@ -48,7 +50,7 @@ function ConnectButton() {
     <Button
       onClick={handleConnectWallet}
       variant="outlined"
-      sx={{ background: "#1a2030", color: "#5479f7" }}
+      sx={{ color: "#5479f7" }}
     >
       Connect to a Wallet
     </Button>
