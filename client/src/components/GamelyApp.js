@@ -1,5 +1,16 @@
+import { Box, Grid, Typography } from "@mui/material";
+import GamelyMainCard from "./GamelyMainCard";
+
 function GamelyApp() {
-  return <div>PORCO DIO</div>;
+  return (
+    <Box
+      sx={{
+        padding: "5vw",
+      }}
+    >
+      <GamelyMainCard />
+    </Box>
+  );
 }
 
 export default GamelyApp;
