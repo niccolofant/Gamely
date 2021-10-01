@@ -1,6 +1,7 @@
 import { Box, Grid, Typography } from "@mui/material";
+import GamelySmallCard from "./GamelySmallCard";
 
-function GamelyMainCard() {
+function GamelyMainCard(props) {
   return (
     <Box>
       <Grid
@@ -36,8 +37,15 @@ function GamelyMainCard() {
             padding: "3vw",
           }}
         >
-          <Grid xs={12}>ciao</Grid>
-          <Grid xs={12}>ciao</Grid>
+          {props.children.map((item) => {
+            return (
+              <div key={item.props.number}>
+                <Grid item xs={12}>
+                  {item}
+                </Grid>
+              </div>
+            );
+          })}
         </Grid>
       </Grid>
     </Box>
@@ -45,3 +53,12 @@ function GamelyMainCard() {
 }
 
 export default GamelyMainCard;
+
+/*
+<Grid item xs={12}>
+            {props.children}
+          </Grid>
+          <Grid item xs={12}>
+            {props.children}
+          </Grid>
+          */
