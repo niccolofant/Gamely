@@ -9,13 +9,13 @@ function Layout(props) {
     <React.Fragment>
       <Box
         sx={{
-          padding: "2vw 0 0 10vw",
+          padding: "2vw 10vw 0 10vw",
         }}
       >
         <Grid container>
           <Grid
             item
-            xs={5}
+            xs={6}
             sx={{
               textAlign: "left",
             }}
@@ -24,7 +24,7 @@ function Layout(props) {
           </Grid>
           <Grid
             item
-            xs={5}
+            xs={6}
             sx={{
               textAlign: "right",
             }}
@@ -34,7 +34,13 @@ function Layout(props) {
         </Grid>
       </Box>
 
-      <main>{props.children}</main>
+      <main
+        style={{
+          padding: "5vw 10vw 0 10vw",
+        }}
+      >
+        {props.children}
+      </main>
     </React.Fragment>
   );
 }
