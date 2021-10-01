@@ -7,32 +7,38 @@ import ConnectButton from "./ConnectButton";
 function Layout(props) {
   return (
     <React.Fragment>
-      <Box sx={{ marginTop: "20px" }}>
+      <Box>
         <Grid
           container
           spacing={5}
           sx={{
             display: "flex",
             alignItems: "center",
-            textAlign: "center",
+            padding: "20px",
           }}
         >
-          <Grid item xs={3}>
+          <Grid
+            item
+            xs={8}
+            sx={{
+              textAlign: "left",
+            }}
+          >
             <Header />
           </Grid>
-          <Grid xs={6}></Grid>
-          <Grid item xs={3}>
+          <Grid
+            item
+            xs={4}
+            sx={{
+              textAlign: "right",
+            }}
+          >
             <ConnectButton />
           </Grid>
         </Grid>
       </Box>
 
-      <div
-        className="navigationWrapper"
-        style={{ borderTop: "1px solid grey ", marginTop: "20px" }}
-      >
-        <main>{props.children}</main>
-      </div>
+      <main>{props.children}</main>
     </React.Fragment>
   );
 }

@@ -2,6 +2,7 @@ import { Button, Box, Typography, Tooltip } from "@mui/material";
 import { useEthers, useEtherBalance } from "@usedapp/core";
 import { formatEther } from "@ethersproject/units";
 import Identicon from "./Identicon.tsx";
+import { GiWallet } from "react-icons/gi";
 
 function ConnectButton() {
   const { activateBrowserWallet, account } = useEthers();
@@ -12,47 +13,32 @@ function ConnectButton() {
   }
 
   return account ? (
-    <Box
-      sx={{
-        display: "flex",
-        alignItems: "center",
-      }}
-    >
-      <Box>
-        <Tooltip title="Balance">
-          <Typography fontSize="md">
-            {etherBalance && parseFloat(formatEther(etherBalance)).toFixed(2)}{" "}
-            ETH
-          </Typography>
-        </Tooltip>
-      </Box>
-      <Button
-        sx={{
-          height: "38px",
-          border: "1px solid grey",
-          borderRadius: "24px",
-          margin: "10px",
-        }}
-      >
+    <Box>
+      <Button>
         <Tooltip title="Account settings">
-          <Typography>
+          <p>
             {account &&
               `${account.slice(0, 6)}...${account.slice(
                 account.length - 4,
                 account.length
               )}`}
-          </Typography>
+          </p>
         </Tooltip>
         <Identicon />
       </Button>
+      <Box>
+        <Tooltip title="Balance">
+          <p>
+            {etherBalance && parseFloat(formatEther(etherBalance)).toFixed(2)}{" "}
+            ETH
+          </p>
+        </Tooltip>
+      </Box>
     </Box>
   ) : (
-    <Button
-      onClick={handleConnectWallet}
-      variant="outlined"
-      sx={{ color: "#5479f7" }}
-    >
-      Connect to a Wallet
+    <Button onClick={handleConnectWallet}>
+      <GiWallet />
+      <p>CONNECT WALLET</p>
     </Button>
   );
 }
