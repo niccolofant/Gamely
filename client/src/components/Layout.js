@@ -7,19 +7,15 @@ import ConnectButton from "./ConnectButton";
 function Layout(props) {
   return (
     <React.Fragment>
-      <Box>
-        <Grid
-          container
-          spacing={5}
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            padding: "20px",
-          }}
-        >
+      <Box
+        sx={{
+          padding: "2vw 10vw 0 10vw",
+        }}
+      >
+        <Grid container>
           <Grid
             item
-            xs={8}
+            xs={6}
             sx={{
               textAlign: "left",
             }}
@@ -28,7 +24,7 @@ function Layout(props) {
           </Grid>
           <Grid
             item
-            xs={4}
+            xs={6}
             sx={{
               textAlign: "right",
             }}
@@ -38,7 +34,13 @@ function Layout(props) {
         </Grid>
       </Box>
 
-      <main>{props.children}</main>
+      <main
+        style={{
+          padding: "5vw 10vw 0 10vw",
+        }}
+      >
+        {props.children}
+      </main>
     </React.Fragment>
   );
 }
