@@ -58,12 +58,3 @@ function GamelyMainCard(props) {
 }
 
 export default GamelyMainCard;
-
-/*
-<Grid item xs={12}>
-            {props.children}
-          </Grid>
-          <Grid item xs={12}>
-            {props.children}
-          </Grid>
-          */
