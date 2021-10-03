@@ -4,6 +4,8 @@ import { formatEther } from "@ethersproject/units";
 import Identicon from "./Identicon.tsx";
 import ButtonUnstyled from "@mui/core/ButtonUnstyled";
 import { styled } from "@mui/system";
+import { useContext, useEffect } from "react";
+import authContext from "./authContext";
 
 const CustomButtonRoot = styled("button")(`
   background-color: #5479F7;
@@ -35,6 +37,12 @@ function ConnectButton() {
   function handleConnectWallet() {
     activateBrowserWallet();
   }
+
+  const { setAuthenticated } = useContext(authContext);
+
+  useEffect(() => {
+    if (account) setAuthenticated(true);
+  }, []);
 
   return account ? (
     <Box>

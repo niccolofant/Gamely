@@ -1,16 +1,18 @@
 import { Box, Grid, Typography } from "@mui/material";
 import GamelySmallCard from "./GamelySmallCard";
+import CreateGameButton from "./CreateGameButton";
 
 function GamelyMainCard(props) {
   return (
-    <Box>
-      <Grid
-        container
-        sx={{
-          background: "#f5f5f5",
-          borderRadius: "15px",
-        }}
-      >
+    <Box
+      sx={{
+        background: "#f5f5f5",
+        borderRadius: "15px",
+        boxShadow:
+          "0 4px 20px 0 rgba(61, 71, 82, 0.1), 0 0 0 0 rgba(0, 127, 255, 0)",
+      }}
+    >
+      <Grid container>
         <Grid
           item
           xs={6}
@@ -21,20 +23,23 @@ function GamelyMainCard(props) {
         >
           <Typography
             variant="h2"
+            gutterBottom
             sx={{
               fontFamily: "Roboto Mono",
               fontWeight: "300",
+              color: "#222823",
             }}
           >
             Compete and win ETHs
           </Typography>
+          <CreateGameButton />
         </Grid>
         <Grid
           item
           xs={6}
           sx={{
             textAlign: "right",
-            padding: "3vw",
+            padding: "4vw 3vw 2vw 10vw",
           }}
         >
           {props.children.map((item) => {
@@ -53,12 +58,3 @@ function GamelyMainCard(props) {
 }
 
 export default GamelyMainCard;
-
-/*
-<Grid item xs={12}>
-            {props.children}
-          </Grid>
-          <Grid item xs={12}>
-            {props.children}
-          </Grid>
-          */
