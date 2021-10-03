@@ -42,6 +42,7 @@ function CreateGameButton() {
 
   const setGame = async (t) => {
     t.preventDefault();
+
     const accounts = await web3.eth.getAccounts();
     isClicked = true;
     if (auth.authenticated) {
@@ -50,8 +51,6 @@ function CreateGameButton() {
         from: account,
         gas: "6000000",
       });
-    } else {
-      console.log("loggati su metamamsk");
     }
   };
   return (
