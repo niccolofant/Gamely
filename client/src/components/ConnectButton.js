@@ -1,7 +1,7 @@
-import { Button, Box, Typography, Tooltip } from "@mui/material";
+import { Button, Box, Typography, Tooltip, Grid } from "@mui/material";
 import { useEthers, useEtherBalance } from "@usedapp/core";
 import { formatEther } from "@ethersproject/units";
-import Identicon from "./Identicon.tsx";
+import { FaEthereum, FaUserCircle } from "react-icons/fa";
 import ButtonUnstyled from "@mui/core/ButtonUnstyled";
 import { styled } from "@mui/system";
 import { useContext, useEffect } from "react";
@@ -46,26 +46,65 @@ function ConnectButton() {
 
   return account ? (
     <Box>
-      <Button>
-        <Tooltip title="Account settings">
-          <Typography>
-            {account &&
-              `${account.slice(0, 6)}...${account.slice(
-                account.length - 4,
-                account.length
-              )}`}
-          </Typography>
-        </Tooltip>
-        <Identicon />
-      </Button>
-      <Box>
-        <Tooltip title="Balance">
-          <Typography>
-            {etherBalance && parseFloat(formatEther(etherBalance)).toFixed(2)}{" "}
-            ETH
-          </Typography>
-        </Tooltip>
-      </Box>
+      <Grid
+        container
+        sx={{
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+        <Grid
+          item
+          xs={8}
+          sx={{
+            padding: "1vw",
+          }}
+        >
+          <Box>
+            <Typography
+              sx={{
+                fontFamily: "Roboto Mono",
+                color: "#222823",
+                fontWeight: "300",
+                padding: "0 1vw 0 0",
+              }}
+            >
+              {etherBalance && parseFloat(formatEther(etherBalance)).toFixed(2)}
+              <FaEthereum style={{ padding: "0 0 0 0.5vw" }} />
+            </Typography>
+          </Box>
+        </Grid>
+        <Grid item xs={4}>
+          <Button
+            sx={{
+              background: "#f5f5f5",
+              borderRadius: "15px",
+              boxShadow:
+                "0 4px 20px 0 rgba(61, 71, 82, 0.1), 0 0 0 0 rgba(0, 127, 255, 0)",
+              padding: "15px 20px",
+            }}
+          >
+            <Tooltip title="Account settings">
+              <Typography
+                sx={{
+                  fontFamily: "Roboto Mono",
+                  color: "#222823",
+                  fontWeight: "300",
+                  padding: "0 0.5vw 0 0",
+                  textTransform: "lowercase",
+                }}
+              >
+                {account &&
+                  `${account.slice(0, 6)}...${account.slice(
+                    account.length - 4,
+                    account.length
+                  )}`}
+              </Typography>
+            </Tooltip>
+            <FaUserCircle style={{ color: "black" }} />
+          </Button>
+        </Grid>
+      </Grid>
     </Box>
   ) : (
     <CustomButton onClick={handleConnectWallet}>Connect Wallet</CustomButton>

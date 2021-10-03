@@ -24,6 +24,17 @@ function GameCard(props) {
         {props.item.slice(0, 6)}...
         {props.item.slice(props.item.length - 4, props.item.length)}
       </Typography>
+      Creator:
+      <Typography
+        variant="h8"
+        sx={{
+          fontFamily: "Roboto Mono",
+          fontWeight: "300",
+          color: "#777",
+        }}
+      >
+        {props.creator}
+      </Typography>
     </Box>
   );
 }

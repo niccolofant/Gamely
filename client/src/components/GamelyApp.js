@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Box, Grid, Typography } from "@mui/material";
 import GamelyMainCard from "./GamelyMainCard";
 import GamelySmallCard from "./GamelySmallCard";
@@ -7,7 +7,6 @@ import { storage } from "../abi/FeesStorageABI";
 import { gameFactory } from "../abi/GameFactoryABI";
 import { game } from "../abi/GameABI";
 import Web3 from "web3";
-import authContext from "./authContext";
 
 const web3 = new Web3(Web3.givenProvider);
 
@@ -16,10 +15,22 @@ const factoryContract = new web3.eth.Contract(gameFactory, factoryAddress);
 
 function GamelyApp() {
   const [games, setGames] = useState("");
+  const [creator, setCreator] = useState("");
+
+  const getCreator = async (gameAddress) => {
+    const gameContract = new web3.eth.Contract(game, gameAddress);
+    const gameCreator = await gameContract.methods.player1().call();
+    return gameCreator;
+  };
 
   useEffect(async () => {
-    let game = await factoryContract.methods.getDeployedGames().call();
-    setGames(game);
+    let games = await factoryContract.methods.getDeployedGames().call();
+    for (const game of games) {
+      const gameCreator = await getCreator(game);
+      setCreator(gameCreator);
+    }
+
+    setGames(games);
   });
 
   return (
@@ -37,7 +48,7 @@ function GamelyApp() {
           Available games ({games.length})
         </Typography>
         {Object.values(games).map((game) => {
-          return <GameCard key={game} item={game} />;
+          return <GameCard key={game} item={game} creator={creator} />;
         })}
       </Box>
     </Box>
