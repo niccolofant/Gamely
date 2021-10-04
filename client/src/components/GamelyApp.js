@@ -38,7 +38,7 @@ function GamelyApp() {
       <Box sx={{ margin: "0 0 10vw 0" }}>
         <GamelyMainCard>
           <GamelySmallCard title="Games Created" number={games.length} />
-          <GamelySmallCard title="Total ETHs won" number="10" />
+          <GamelySmallCard title="Total winnings" number="10" currency="$" />
         </GamelyMainCard>
       </Box>
       <Box>
