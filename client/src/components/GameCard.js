@@ -18,7 +18,6 @@ function GameCard(props) {
           fontFamily: "Roboto Mono",
           fontWeight: "400",
           color: "#222823",
-          textTransform: "uppercase",
         }}
       >
         {props.item.slice(0, 6)}...
