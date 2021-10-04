@@ -1,5 +1,6 @@
 import image from "../images/main-page-image.svg";
 import AppButton from "./AppButton";
+import MainPageCard from "./MainPageCard";
 import { Box, Grid, Typography } from "@mui/material";
 
 function MainPage() {
@@ -49,6 +50,14 @@ function MainPage() {
           <img src={image} alt="Main Logo" />
         </Grid>
       </Grid>
+      <Box
+        sx={{
+          margin: "10vw 0 0 0",
+          padding: "5vw",
+        }}
+      >
+        <MainPageCard />
+      </Box>
     </Box>
   );
 }
