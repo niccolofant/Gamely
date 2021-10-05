@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext } from "react";
-import { Box, Grid, Typography, Alert, AlertTitle } from "@mui/material";
+import { useContext } from "react";
+import { Grid, Alert } from "@mui/material";
 import ButtonUnstyled from "@mui/core/ButtonUnstyled";
 import { styled } from "@mui/system";
 import { gameFactory } from "../abi/GameFactoryABI";
