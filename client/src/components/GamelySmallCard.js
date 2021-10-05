@@ -1,17 +1,7 @@
+import { useState, useEffect } from "react";
 import { Box, Typography } from "@mui/material";
 
-const request = require("request");
-
-async function getEthPrice() {
-  const data = await request.get(
-    "https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD"
-  );
-  return data.json();
-}
-(async () => {
-  const result = await getEthPrice();
-  console.log(result);
-})();
+//const request = require("request");
 
 /*
 function getEthPrice() {
@@ -27,7 +17,21 @@ function getEthPrice() {
 }
 */
 function GamelySmallCard(props) {
-  const { title, number, currency } = props;
+  const { title, number, currency, type } = props;
+
+  const [ethPrice, setEthPrice] = useState(0);
+
+  useEffect(() => {
+    getEthPrice();
+  }, []);
+
+  async function getEthPrice() {
+    let response = await fetch(
+      "https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD"
+    );
+    let data = await response.json();
+    setEthPrice(data.USD);
+  }
 
   return (
     <Box
@@ -49,9 +53,14 @@ function GamelySmallCard(props) {
       >
         {title}
       </Typography>
-      <Typography variant="h2" sx={{ fontFamily: "Roboto Mono" }}>
+
+      <Typography
+        variant="h3"
+        sx={{ fontFamily: "Roboto Mono", fontWeight: "300" }}
+      >
         {currency}
-        {number}
+
+        {type ? number * type * parseInt(ethPrice) : number}
       </Typography>
     </Box>
   );
