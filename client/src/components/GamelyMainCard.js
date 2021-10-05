@@ -1,5 +1,4 @@
 import { Box, Grid, Typography } from "@mui/material";
-import GamelySmallCard from "./GamelySmallCard";
 import CreateGameButton from "./CreateGameButton";
 
 function GamelyMainCard(props) {
@@ -28,6 +27,7 @@ function GamelyMainCard(props) {
               fontFamily: "Roboto Mono",
               fontWeight: "300",
               color: "#222823",
+              margin: "2vw 0 1vw 0 ",
             }}
           >
             Compete and win ETHs
