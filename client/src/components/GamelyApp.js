@@ -1,9 +1,9 @@
 import { useState, useEffect, useContext } from "react";
 import { Box, Grid, Typography } from "@mui/material";
+import players from "../images/players-image.svg";
 import GamelyMainCard from "./GamelyMainCard";
 import GamelySmallCard from "./GamelySmallCard";
 import GameCard from "./GameCard";
-import { storage } from "../abi/FeesStorageABI";
 import { gameFactory } from "../abi/GameFactoryABI";
 import { game } from "../abi/GameABI";
 import Web3 from "web3";
@@ -34,11 +34,28 @@ function GamelyApp() {
   });
 
   return (
-    <Box sx={{ padding: "5vw" }}>
+    <Box
+      sx={{
+        padding: "5vw",
+        backgroundImage: `url(${players})`,
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "100vw 100vh",
+      }}
+    >
       <Box sx={{ margin: "0 0 10vw 0" }}>
         <GamelyMainCard>
-          <GamelySmallCard title="Games Created" number={games.length} />
-          <GamelySmallCard title="Total winnings" number="10" currency="$" />
+          <GamelySmallCard
+            title="Games Created"
+            number={games.length}
+            type={false}
+          />
+          <GamelySmallCard
+            title="Total winnings"
+            number="10"
+            currency="$"
+            type={true}
+          />
         </GamelyMainCard>
       </Box>
       <Box>
