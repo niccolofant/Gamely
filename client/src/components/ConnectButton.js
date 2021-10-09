@@ -41,8 +41,10 @@ function ConnectButton() {
   const { setAuthenticated } = useContext(authContext);
 
   useEffect(() => {
-    if (account) setAuthenticated(true);
-  }, []);
+    if (account) {
+      setAuthenticated(true);
+    }
+  }, [account, setAuthenticated]);
 
   return account ? (
     <Box>
