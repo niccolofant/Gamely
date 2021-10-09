@@ -17,30 +17,26 @@ function GamelyApp() {
   const [games, setGames] = useState("");
   const [creator, setCreator] = useState("");
 
-  const getCreator = async (gameAddress) => {
-    const gameContract = new web3.eth.Contract(game, gameAddress);
-    const gameCreator = await gameContract.methods.player1().call();
-    return gameCreator;
-  };
-
   useEffect(async () => {
     let games = await factoryContract.methods.getDeployedGames().call();
+    const getCreator = async (gameAddress) => {
+      const gameContract = new web3.eth.Contract(game, gameAddress);
+      const gameCreator = await gameContract.methods.player1().call();
+      return gameCreator;
+    };
+
     for (const game of games) {
       const gameCreator = await getCreator(game);
       setCreator(gameCreator);
     }
 
     setGames(games);
-  });
+  }, []);
 
   return (
     <Box
       sx={{
         padding: "5vw",
-        backgroundImage: `url(${players})`,
-        backgroundSize: "cover",
-        backgroundRepeat: "no-repeat",
-        backgroundSize: "100vw 100vh",
       }}
     >
       <Box sx={{ margin: "0 0 10vw 0" }}>
