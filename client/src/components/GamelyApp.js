@@ -1,11 +1,9 @@
-import { useState, useEffect, useContext } from "react";
-import { Box, Grid, Typography } from "@mui/material";
-import players from "../images/players-image.svg";
+import { useState, useEffect } from "react";
+import { Box, Typography } from "@mui/material";
 import GamelyMainCard from "./GamelyMainCard";
 import GamelySmallCard from "./GamelySmallCard";
 import GameCard from "./GameCard";
 import { gameFactory } from "../abi/GameFactoryABI";
-import { game } from "../abi/GameABI";
 import Web3 from "web3";
 
 const web3 = new Web3(Web3.givenProvider);
@@ -15,23 +13,15 @@ const factoryContract = new web3.eth.Contract(gameFactory, factoryAddress);
 
 function GamelyApp() {
   const [games, setGames] = useState("");
-  const [creator, setCreator] = useState("");
 
-  useEffect(async () => {
-    let games = await factoryContract.methods.getDeployedGames().call();
-    const getCreator = async (gameAddress) => {
-      const gameContract = new web3.eth.Contract(game, gameAddress);
-      const gameCreator = await gameContract.methods.player1().call();
-      return gameCreator;
-    };
+  useEffect(() => {
+    async function getGames() {
+      let games = await factoryContract.methods.getDeployedGames().call();
 
-    for (const game of games) {
-      const gameCreator = await getCreator(game);
-      setCreator(gameCreator);
+      setGames(games);
     }
-
-    setGames(games);
-  }, []);
+    getGames();
+  }, [games]);
 
   return (
     <Box
@@ -48,7 +38,7 @@ function GamelyApp() {
           />
           <GamelySmallCard
             title="Total winnings"
-            number="10"
+            number="2"
             currency="$"
             type={true}
           />
@@ -61,7 +51,7 @@ function GamelyApp() {
           Available games ({games.length})
         </Typography>
         {Object.values(games).map((game) => {
-          return <GameCard key={game} item={game} creator={creator} />;
+          return <GameCard key={game} item={game} />;
         })}
       </Box>
     </Box>
