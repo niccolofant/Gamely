@@ -5,17 +5,14 @@ import {
   Modal,
   Typography,
   Box,
-  FormControl,
-  InputLabel,
-  Input,
   TextField,
   InputAdornment,
-  OutlinedInput,
 } from "@mui/material";
 import ButtonUnstyled from "@mui/core/ButtonUnstyled";
 import { styled } from "@mui/system";
 import { FaEthereum } from "react-icons/fa";
 import { gameFactory } from "../abi/GameFactoryABI";
+import { game } from "../abi/GameABI";
 import Web3 from "web3";
 import authContext from "./authContext";
 
@@ -41,7 +38,6 @@ const CustomButtonRoot = styled("button")(`
   &:hover {
     background-color: black;
   }
-
 `);
 
 let isClicked = false;
@@ -57,42 +53,60 @@ function CreateGameButton() {
   const [balance, setBalance] = useState("");
   const [bet, setBet] = useState("");
 
-  const handleOpenModal = () => setOpenModal(true);
   const handleCloseModal = () => setOpenModal(false);
 
   const handleTextFieldChange = (e) => {
     setBet(e.target.value);
   };
 
-  const createGame = async (t) => {
+  async function createGame(t) {
     t.preventDefault();
 
-    const accounts = await web3.eth.getAccounts();
-    setBalance(
-      parseFloat(
-        web3.utils.fromWei(await web3.eth.getBalance(accounts[0]), "ether")
-      ).toFixed(2)
-    );
-
     isClicked = true;
-    if (auth.authenticated) {
-      setOpenModal(true);
-    }
-  };
 
-  const setGame = async (t) => {
-    t.preventDefault();
-
-    const accounts = await web3.eth.getAccounts();
-    isClicked = true;
     if (auth.authenticated) {
+      const accounts = await web3.eth.getAccounts();
       const account = accounts[0];
-      const post = await factoryContract.methods.instanciateGame().send({
-        from: account,
-        gas: "6000000",
-      });
+      setOpenModal(true);
+      setBalance(
+        parseFloat(
+          web3.utils.fromWei(await web3.eth.getBalance(account), "ether")
+        ).toFixed(2)
+      );
     }
-  };
+  }
+
+  async function setGame(t) {
+    t.preventDefault();
+
+    isClicked = true;
+
+    if (bet > balance) {
+      setInputError(true);
+    } else {
+      setInputError(false);
+      if (auth.authenticated) {
+        const accounts = await web3.eth.getAccounts();
+        const account = accounts[0];
+        await factoryContract.methods.instanciateGame().send({
+          from: account,
+          gas: "6000000",
+        });
+        let games = await factoryContract.methods.getDeployedGames().call();
+
+        const gameContract = new web3.eth.Contract(
+          game,
+          games[games.length - 1]
+        );
+
+        await gameContract.methods.createGame().send({
+          from: account,
+          value: web3.utils.toWei(bet),
+        });
+      }
+    }
+  }
+
   return (
     <Box>
       <Grid container>
@@ -152,6 +166,7 @@ function CreateGameButton() {
           <Grid container>
             <Grid item xs={9} sx={{ textAlign: "left" }}>
               <TextField
+                error={inputError}
                 label="Bet amount"
                 id="outlined-start-adornment"
                 value={bet}
@@ -163,7 +178,7 @@ function CreateGameButton() {
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <FaEthereum />
+                      <FaEthereum style={{ color: "#222823" }} />
                     </InputAdornment>
                   ),
                 }}
