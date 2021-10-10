@@ -1,37 +1,24 @@
 import { useState, useEffect } from "react";
 import { Box, Typography } from "@mui/material";
 
-//const request = require("request");
-
-/*
-function getEthPrice() {
-  request.get(
-    "https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD",
-    function (error, response, body) {
-      if (error) return error;
-      else if (!response) return new Error("no response");
-      else if (response.statusCode !== 200) return new Error("bad response");
-      else return JSON.stringify(JSON.parse(body), null, 4);
-    }
-  );
-}
-*/
 function GamelySmallCard(props) {
   const { title, number, currency, type } = props;
 
   const [ethPrice, setEthPrice] = useState(0);
 
-  useEffect(() => {
-    getEthPrice();
-  }, []);
+  useEffect(async () => {
+    let isCancelled = false;
 
-  async function getEthPrice() {
     let response = await fetch(
       "https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD"
     );
     let data = await response.json();
-    setEthPrice(data.USD);
-  }
+    if (!isCancelled) setEthPrice(data.USD);
+
+    return () => {
+      isCancelled = true;
+    };
+  }, []);
 
   return (
     <Box
