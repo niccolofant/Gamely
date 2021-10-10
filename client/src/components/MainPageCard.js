@@ -13,7 +13,7 @@ function MainPageCard() {
       }}
     >
       <Grid container>
-        <Grid item xs="7" sx={{ padding: "7vw 5vw 0 5vw" }}>
+        <Grid item xs={7} sx={{ padding: "7vw 5vw 0 5vw" }}>
           <Typography
             variant="h3"
             gutterBottom
@@ -64,7 +64,7 @@ function MainPageCard() {
           </Typography>
         </Grid>
 
-        <Grid item xs="5" sx={{ padding: "5vw" }}>
+        <Grid item xs={5} sx={{ padding: "5vw" }}>
           <WinCard />
         </Grid>
       </Grid>
