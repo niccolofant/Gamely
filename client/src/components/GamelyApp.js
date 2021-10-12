@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Box, Typography } from "@mui/material";
 import GamelyMainCard from "./GamelyMainCard";
 import GamelySmallCard from "./GamelySmallCard";
@@ -13,14 +13,18 @@ const factoryContract = new web3.eth.Contract(gameFactory, factoryAddress);
 
 function GamelyApp() {
   const [games, setGames] = useState("");
+  const isMounted = useRef(true);
 
   useEffect(() => {
     async function getGames() {
       let games = await factoryContract.methods.getDeployedGames().call();
 
-      setGames(games);
+      if (isMounted.current) setGames(games);
     }
     getGames();
+    return () => {
+      isMounted.current = false;
+    };
   }, [games]);
 
   return (

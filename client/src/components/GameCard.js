@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Box, Grid, Typography } from "@mui/material";
 import JoinGameButton from "./JoinGameButton";
 import { game } from "../abi/GameABI";
@@ -15,6 +15,7 @@ function GameCard(props) {
   const [player2, setPlayer2] = useState("");
   const [bet, setBet] = useState("");
   const [prizePool, setPrizePool] = useState("");
+  const isMounted = useRef(true);
 
   useEffect(() => {
     async function retrieveGameInfo() {
@@ -23,12 +24,17 @@ function GameCard(props) {
       const bet = await gameContract.methods.bet().call();
       const prizePool = await gameContract.methods.prizePool().call();
 
-      setGameCreator(gameCreator);
-      setPlayer2(player2);
-      setBet(bet);
-      setPrizePool(prizePool);
+      if (isMounted.current) {
+        setGameCreator(gameCreator);
+        setPlayer2(player2);
+        setBet(bet);
+        setPrizePool(prizePool);
+      }
     }
     retrieveGameInfo();
+    return () => {
+      isMounted.current = false;
+    };
   }, [gameContract.methods]);
 
   return (

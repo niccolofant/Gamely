@@ -1,22 +1,24 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Box, Typography } from "@mui/material";
 
 function GamelySmallCard(props) {
   const { title, number, currency, type } = props;
 
   const [ethPrice, setEthPrice] = useState(0);
+  const isMounted = useRef(true);
 
-  useEffect(async () => {
-    let isCancelled = false;
-
-    let response = await fetch(
-      "https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD"
-    );
-    let data = await response.json();
-    if (!isCancelled) setEthPrice(data.USD);
+  useEffect(() => {
+    async function fetchEthPrice() {
+      let response = await fetch(
+        "https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD"
+      );
+      let data = await response.json();
+      if (isMounted.current) setEthPrice(data.USD);
+    }
+    fetchEthPrice();
 
     return () => {
-      isCancelled = true;
+      isMounted.current = false;
     };
   }, []);
 
