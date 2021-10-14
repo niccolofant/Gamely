@@ -40,7 +40,6 @@ function GameCard(props) {
   return (
     <Box
       sx={{
-        background: "#f5f5f5",
         borderRadius: "15px",
         boxShadow:
           "0 4px 20px 0 rgba(61, 71, 82, 0.1), 0 0 0 0 rgba(0, 127, 255, 0)",
