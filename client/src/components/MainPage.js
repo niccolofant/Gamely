@@ -19,8 +19,8 @@ function MainPage() {
             variant="h2"
             gutterBottom
             sx={{
-              fontFamily: "Roboto Mono",
-              fontWeight: "300",
+              fontFamily: "Poppins",
+              fontWeight: "400",
             }}
           >
             Stake and earn ETHs while playing{" "}

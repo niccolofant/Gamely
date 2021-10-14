@@ -15,7 +15,7 @@ function WinCard() {
         variant="h6"
         gutterBottom
         sx={{
-          fontFamily: "Roboto Mono",
+          fontFamily: "Poppins",
           fontWeight: "400",
           color: "#222823",
         }}

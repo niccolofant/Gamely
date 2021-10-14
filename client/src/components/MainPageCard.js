@@ -6,6 +6,7 @@ function MainPageCard() {
   return (
     <Box
       sx={{
+        background: "white",
         borderRadius: "15px",
         boxShadow:
           "0 4px 20px 0 rgba(61, 71, 82, 0.1), 0 0 0 0 rgba(0, 127, 255, 0)",
@@ -17,8 +18,8 @@ function MainPageCard() {
             variant="h3"
             gutterBottom
             sx={{
-              fontFamily: "Roboto Mono",
-              fontWeight: "300",
+              fontFamily: "Poppins",
+              fontWeight: "400",
               color: "#222823",
             }}
           >
@@ -36,11 +37,11 @@ function MainPageCard() {
             Play and win!
           </Typography>
           <Typography
-            variant="h7"
+            variant="h6"
             gutterBottom
             sx={{
               fontFamily: "Roboto Mono",
-              fontWeight: "300",
+              fontWeight: "200",
               color: "#777",
             }}
           >

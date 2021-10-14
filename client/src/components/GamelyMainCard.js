@@ -17,8 +17,8 @@ function GamelyMainCard(props) {
             variant="h2"
             gutterBottom
             sx={{
-              fontFamily: "Roboto Mono",
-              fontWeight: "300",
+              fontFamily: "Poppins",
+              fontWeight: "400",
               color: "#222823",
               margin: "2vw 0 1vw 0 ",
             }}
