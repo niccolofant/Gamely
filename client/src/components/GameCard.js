@@ -1,5 +1,13 @@
 import { useState, useEffect, useRef } from "react";
-import { Box, Grid, Typography } from "@mui/material";
+import { styled } from "@mui/material/styles";
+import {
+  Box,
+  Grid,
+  Typography,
+  Button,
+  Tooltip,
+  tooltipClasses,
+} from "@mui/material";
 import JoinGameButton from "./JoinGameButton";
 import { game } from "../abi/GameABI";
 import { FaEthereum } from "react-icons/fa";
@@ -7,6 +15,19 @@ import { AiOutlineInfoCircle } from "react-icons/ai";
 import Web3 from "web3";
 
 const web3 = new Web3(Web3.givenProvider);
+
+const CustomTooltip = styled(({ className, ...props }) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))(({ theme }) => ({
+  [`& .${tooltipClasses.tooltip}`]: {
+    backgroundColor: "white",
+    color: "#777",
+    maxWidth: 220,
+    fontSize: theme.typography.pxToRem(12),
+    fontFamily: "Poppins",
+    border: "1px solid #dadde9",
+  },
+}));
 
 function GameCard(props) {
   const gameContract = new web3.eth.Contract(game, props.item);
@@ -40,16 +61,21 @@ function GameCard(props) {
   return (
     <Box
       sx={{
+        marginTop: "3vw",
         background: "white",
         borderRadius: "15px",
         boxShadow:
           "0 4px 20px 0 rgba(61, 71, 82, 0.1), 0 0 0 0 rgba(0, 127, 255, 0)",
         padding: "3vw",
-        marginTop: "3vw",
+        transition: "transform 0.5s",
+        "&:hover": {
+          background: "white",
+          transform: "scale(1.03)",
+        },
       }}
     >
       <Grid container>
-        <Grid item xs={6}>
+        <Grid item xs={3} sx={{ textAlign: "center" }}>
           <Typography
             variant="h5"
             sx={{
@@ -72,44 +98,30 @@ function GameCard(props) {
           >
             vs {gameCreator.slice(0, 6)}...
             {gameCreator.slice(gameCreator.length - 4, gameCreator.length)}
-            <AiOutlineInfoCircle />
+            <CustomTooltip
+              title={
+                <>
+                  <Typography color="inherit">Friend link: </Typography>
+                  <Typography color="black">
+                    <em>{"And here's"}</em> <b>{"some"}</b>{" "}
+                    <u>{"amazing content"}</u>. {"It's very engaging. Right?"}
+                  </Typography>
+                </>
+              }
+            >
+              <span
+                style={{
+                  padding: "0 0 0 0.5vw",
+                }}
+              >
+                <AiOutlineInfoCircle />
+              </span>
+            </CustomTooltip>
           </Typography>
         </Grid>
-        <Grid
-          item
-          xs={2}
-          sx={{
-            textAlign: "center",
 
-            padding: "0 2.5vw 0 0",
-          }}
-        >
+        <Grid item xs={6} sx={{ textAlign: "center" }}>
           <Box>
-            <Typography
-              sx={{
-                fontFamily: "Roboto Mono",
-                fontSize: "14px",
-                fontWeight: "300",
-                color: "#777",
-                padding: "0 0 0.2vw 0",
-              }}
-            >
-              Game <br />
-            </Typography>
-            <Typography
-              variant="h7"
-              sx={{
-                fontFamily: "Roboto Mono",
-                fontWeight: "400",
-                color: "#222823",
-              }}
-            >
-              Clash Royale
-            </Typography>
-          </Box>
-        </Grid>
-        <Grid item xs={2} sx={{ textAlign: "center" }}>
-          <Box sx={{ borderLeft: "1px solid #d1d1d1" }}>
             <Typography
               sx={{
                 fontFamily: "Roboto Mono",
@@ -134,11 +146,11 @@ function GameCard(props) {
             </Typography>
           </Box>
         </Grid>
-        <Grid item xs={2} sx={{ textAlign: "center" }}>
+        <Grid item xs={3} sx={{ textAlign: "center" }}>
           {player2 === "0x0000000000000000000000000000000000000000" ? (
             <JoinGameButton game={gameContract} bet={bet} />
           ) : (
-            <Box sx={{ borderLeft: "1px solid #d1d1d1" }}>
+            <Box>
               <Typography
                 sx={{
                   fontFamily: "Roboto Mono",
