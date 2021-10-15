@@ -3,8 +3,9 @@ import { useEthers, useEtherBalance } from "@usedapp/core";
 import { formatEther } from "@ethersproject/units";
 import { FaEthereum, FaUserCircle } from "react-icons/fa";
 import ButtonUnstyled from "@mui/core/ButtonUnstyled";
+import ProfileConfig from "./ProfileConfig";
 import { styled } from "@mui/system";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import authContext from "./authContext";
 
 const CustomButtonRoot = styled("button")(`
@@ -46,8 +47,17 @@ function ConnectButton() {
     }
   }, [account, setAuthenticated]);
 
+  const [openModal, setOpenModal] = useState(false);
+  const handleOpenModal = () => setOpenModal(true);
+  const handleCloseModal = () => setOpenModal(false);
+
   return account ? (
     <Box>
+      <ProfileConfig
+        open={openModal}
+        account={account}
+        onClose={handleCloseModal}
+      />
       <Grid
         container
         sx={{
@@ -85,6 +95,7 @@ function ConnectButton() {
                 "0 4px 20px 0 rgba(61, 71, 82, 0.1), 0 0 0 0 rgba(0, 127, 255, 0)",
               padding: "15px 20px",
             }}
+            onClick={handleOpenModal}
           >
             <Tooltip title="Account settings">
               <Typography
