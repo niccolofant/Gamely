@@ -1,13 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { styled } from "@mui/material/styles";
-import {
-  Box,
-  Grid,
-  Typography,
-  Button,
-  Tooltip,
-  tooltipClasses,
-} from "@mui/material";
+import { Box, Grid, Typography, Tooltip, tooltipClasses } from "@mui/material";
 import JoinGameButton from "./JoinGameButton";
 import { game } from "../abi/GameABI";
 import { FaEthereum } from "react-icons/fa";
