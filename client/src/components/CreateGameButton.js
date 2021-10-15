@@ -63,7 +63,6 @@ function CreateGameButton() {
     t.preventDefault();
 
     isClicked = true;
-
     if (auth.authenticated) {
       const accounts = await web3.eth.getAccounts();
       const account = accounts[0];
@@ -80,8 +79,7 @@ function CreateGameButton() {
     t.preventDefault();
 
     isClicked = true;
-
-    if (bet > balance) {
+    if (bet > balance || bet <= 0) {
       setInputError(true);
     } else {
       setInputError(false);
@@ -155,7 +153,7 @@ function CreateGameButton() {
           <Typography
             variant="h5"
             sx={{
-              fontFamily: "Roboto Mono",
+              fontFamily: "Poppins",
               fontWeight: "400",
               color: "#222823",
               margin: "0 0 2vw 0 ",
