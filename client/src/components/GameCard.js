@@ -2,8 +2,10 @@ import { useState, useEffect, useRef } from "react";
 import { styled } from "@mui/material/styles";
 import { Box, Grid, Typography, Tooltip, tooltipClasses } from "@mui/material";
 import JoinGameButton from "./JoinGameButton";
+import DeleteGameButton from "./DeleteGameButton";
 import { game } from "../abi/GameABI";
 import { FaEthereum } from "react-icons/fa";
+import { useEthers, useEtherBalance } from "@usedapp/core";
 import { AiOutlineInfoCircle } from "react-icons/ai";
 import Web3 from "web3";
 
@@ -24,6 +26,8 @@ const CustomTooltip = styled(({ className, ...props }) => (
 
 function GameCard(props) {
   const gameContract = new web3.eth.Contract(game, props.item);
+
+  const { account } = useEthers();
 
   const [gameCreator, setGameCreator] = useState("");
   const [player2, setPlayer2] = useState("");
@@ -140,7 +144,11 @@ function GameCard(props) {
           </Box>
         </Grid>
         <Grid item xs={3} sx={{ textAlign: "center" }}>
-          {player2 === "0x0000000000000000000000000000000000000000" ? (
+          {player2 === "0x0000000000000000000000000000000000000000" &&
+          gameCreator === account ? (
+            <DeleteGameButton game={gameContract} />
+          ) : player2 === "0x0000000000000000000000000000000000000000" &&
+            gameCreator !== account ? (
             <JoinGameButton game={gameContract} bet={bet} />
           ) : (
             <Box>
