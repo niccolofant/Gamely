@@ -40,8 +40,6 @@ const CustomButtonRoot = styled("button")(`
   }
 `);
 
-let isClicked = false;
-
 function CustomButton(props) {
   return <ButtonUnstyled {...props} component={CustomButtonRoot} />;
 }
@@ -50,6 +48,7 @@ function CreateGameButton() {
   const auth = useContext(authContext);
   const [openModal, setOpenModal] = useState(false);
   const [inputError, setInputError] = useState(false);
+  const [error, setError] = useState(false);
   const [balance, setBalance] = useState("");
   const [bet, setBet] = useState("");
 
@@ -62,8 +61,8 @@ function CreateGameButton() {
   async function createGame(t) {
     t.preventDefault();
 
-    isClicked = true;
     if (auth.authenticated) {
+      setError(false);
       const accounts = await web3.eth.getAccounts();
       const account = accounts[0];
       setOpenModal(true);
@@ -72,13 +71,14 @@ function CreateGameButton() {
           web3.utils.fromWei(await web3.eth.getBalance(account), "ether")
         ).toFixed(2)
       );
+    } else {
+      setError(true);
     }
   }
 
   async function setGame(t) {
     t.preventDefault();
 
-    isClicked = true;
     if (bet > balance || bet <= 0) {
       setInputError(true);
     } else {
@@ -112,11 +112,11 @@ function CreateGameButton() {
           <CustomButton onClick={createGame}>Create Game</CustomButton>
         </Grid>
         <Grid item xs={7}>
-          {!auth.authenticated && isClicked ? (
+          {error ? (
             <Alert
-              severity="warning"
+              variant="filled"
+              severity="error"
               sx={{
-                border: "1px solid #fcd69f",
                 fontFamily: "Roboto Mono",
                 fontWeight: "400",
                 fontSize: "14px",
