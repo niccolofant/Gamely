@@ -94,6 +94,9 @@ function ConnectButton() {
               boxShadow:
                 "0 4px 20px 0 rgba(61, 71, 82, 0.1), 0 0 0 0 rgba(0, 127, 255, 0)",
               padding: "15px 20px",
+              "&:hover": {
+                background: "white",
+              },
             }}
             onClick={handleOpenModal}
           >
@@ -104,7 +107,7 @@ function ConnectButton() {
                   color: "#222823",
                   fontWeight: "300",
                   padding: "0 0.5vw 0 0",
-                  textTransform: "lowercase",
+                  textTransform: "none",
                 }}
               >
                 {account &&
